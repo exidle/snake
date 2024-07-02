@@ -1,0 +1,58 @@
+[gd_scene load_steps=9 format=3 uid="uid://dtfcnot1wruor"]
+
+[ext_resource type="Script" path="res://logic/Player.gd" id="1_5pj3o"]
+[ext_resource type="Texture2D" uid="uid://c1pn3f7det0ds" path="res://icon.svg" id="1_q7gtm"]
+[ext_resource type="Script" path="res://logic/Inputs.gd" id="2_d7dco"]
+[ext_resource type="FontFile" uid="uid://bnl1vkol8ivdn" path="res://montserrat.otf" id="4_7lcxd"]
+[ext_resource type="LabelSettings" uid="uid://csnrurp4sehdq" path="res://scenes/label_font_conf.tres" id="5_4ea11"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_5or1k"]
+size = Vector2(128, 128)
+
+[sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_lqw7a"]
+properties/0/path = NodePath(".:motion")
+properties/0/spawn = true
+properties/0/replication_mode = 1
+properties/1/path = NodePath(".:angle")
+properties/1/spawn = true
+properties/1/replication_mode = 1
+
+[sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_ynl50"]
+properties/0/path = NodePath("label:text")
+properties/0/spawn = true
+properties/0/replication_mode = 0
+properties/1/path = NodePath(".:synced_position")
+properties/1/spawn = true
+properties/1/replication_mode = 1
+properties/2/path = NodePath(".:synced_rotation")
+properties/2/spawn = true
+properties/2/replication_mode = 1
+
+[node name="player" type="CharacterBody2D"]
+script = ExtResource("1_5pj3o")
+
+[node name="sprite" type="Sprite2D" parent="."]
+texture = ExtResource("1_q7gtm")
+
+[node name="collisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("RectangleShape2D_5or1k")
+
+[node name="Inputs" type="Node2D" parent="."]
+script = ExtResource("2_d7dco")
+
+[node name="InputsSync" type="MultiplayerSynchronizer" parent="Inputs"]
+replication_config = SubResource("SceneReplicationConfig_lqw7a")
+
+[node name="Synchronizer" type="MultiplayerSynchronizer" parent="."]
+replication_config = SubResource("SceneReplicationConfig_ynl50")
+
+[node name="label" type="Label" parent="."]
+offset_left = -63.0
+offset_top = -56.0
+offset_right = 64.0
+offset_bottom = -29.0
+theme_override_fonts/font = ExtResource("4_7lcxd")
+theme_override_font_sizes/font_size = 16
+text = "PLAYER"
+label_settings = ExtResource("5_4ea11")
+horizontal_alignment = 1
