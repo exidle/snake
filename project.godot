@@ -34,6 +34,7 @@ rotate_ccw={
 
 [layer_names]
 
+2d_physics/layer_1="snake_block"
 2d_physics/layer_5="walls"
 
 [rendering]

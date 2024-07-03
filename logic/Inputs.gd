@@ -12,8 +12,6 @@ enum INPUT_TYPE {MOUSE, KEYBOARD}
 
 @export var angle := 0.0
 
-
-
 func update(center: Vector2, rot: float) -> void:
 	match input_type:
 		# Mouse input

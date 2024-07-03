@@ -19,5 +19,12 @@ position = Vector2(1030, 557)
 [node name="Players" type="Node2D" parent="."]
 
 [node name="PlayerSpawner" type="MultiplayerSpawner" parent="."]
-_spawnable_scenes = PackedStringArray("res://scenes/player.tscn")
+_spawnable_scenes = PackedStringArray("res://scenes/snake.tscn")
 spawn_path = NodePath("../Players")
+
+[node name="Label" type="Label" parent="."]
+offset_left = 109.0
+offset_top = 121.0
+offset_right = 151.0
+offset_bottom = 144.0
+text = "1"

@@ -113,7 +113,7 @@ func begin_game() -> void:
 	load_world.rpc()
 
 	var world: Node2D = get_tree().get_root().get_node("World")
-	var player_scene: PackedScene = load("res://scenes/player.tscn")
+	var player_scene: PackedScene = load("res://scenes/snake.tscn")
 
 	# Create a dictionary with peer ID. and respective spawn points.
 	# TODO: This could be improved by randomizing spawn points for players.
