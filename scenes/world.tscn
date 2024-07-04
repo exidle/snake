@@ -1,4 +1,6 @@
-[gd_scene format=3 uid="uid://bw2lw6jo1yq2e"]
+[gd_scene load_steps=2 format=3 uid="uid://bw2lw6jo1yq2e"]
+
+[ext_resource type="PackedScene" uid="uid://de3766wqx1bna" path="res://scenes/NpcBlock.tscn" id="1_nce1e"]
 
 [node name="World" type="Node2D"]
 
@@ -22,9 +24,7 @@ position = Vector2(1030, 557)
 _spawnable_scenes = PackedStringArray("res://scenes/snake.tscn")
 spawn_path = NodePath("../Players")
 
-[node name="Label" type="Label" parent="."]
-offset_left = 109.0
-offset_top = 121.0
-offset_right = 151.0
-offset_bottom = 144.0
-text = "1"
+[node name="NpcBlocks" type="Node2D" parent="."]
+
+[node name="npc_block" parent="NpcBlocks" instance=ExtResource("1_nce1e")]
+position = Vector2(404, 321)

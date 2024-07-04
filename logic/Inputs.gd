@@ -12,7 +12,12 @@ enum INPUT_TYPE {MOUSE, KEYBOARD}
 
 @export var angle := 0.0
 
+@export var motion_enabled := false
+
 func update(center: Vector2, rot: float) -> void:
+	if Input.is_action_just_pressed(&"toggle_motion"):
+		motion_enabled = !motion_enabled 
+
 	match input_type:
 		# Mouse input
 		INPUT_TYPE.MOUSE:

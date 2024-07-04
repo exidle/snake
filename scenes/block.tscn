@@ -1,4 +1,4 @@
-[gd_scene load_steps=7 format=3 uid="uid://dtfcnot1wruor"]
+[gd_scene load_steps=6 format=3 uid="uid://dtfcnot1wruor"]
 
 [ext_resource type="Script" path="res://logic/block.gd" id="1_gm7hs"]
 [ext_resource type="Texture2D" uid="uid://c1pn3f7det0ds" path="res://icon.svg" id="2_1qm0b"]
@@ -7,11 +7,6 @@
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_5or1k"]
 size = Vector2(128, 128)
-
-[sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_ynl50"]
-properties/0/path = NodePath("label:text")
-properties/0/spawn = true
-properties/0/replication_mode = 0
 
 [node name="block" type="CharacterBody2D"]
 collision_mask = 16
@@ -23,9 +18,6 @@ texture = ExtResource("2_1qm0b")
 
 [node name="collisionShape2D" type="CollisionShape2D" parent="."]
 shape = SubResource("RectangleShape2D_5or1k")
-
-[node name="Synchronizer" type="MultiplayerSynchronizer" parent="."]
-replication_config = SubResource("SceneReplicationConfig_ynl50")
 
 [node name="label" type="Label" parent="."]
 offset_left = -63.0

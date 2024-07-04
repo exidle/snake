@@ -2,6 +2,7 @@ extends CharacterBody2D
 
 ## The player's movement speed (in pixels per second).
 const MOTION_SPEED = 90.0
+var motion_multiplier = 1.0
 
 ## The distance between stored positions (pixels).
 const STORED_DISTANCE = 30.0
@@ -17,15 +18,21 @@ var update_position_time: float = 0.
 func _physics_process(delta):
 	# Everybody runs physics. i.e. clients try to predict where they will be during the next frame.
 	if inputs != null and parent_block == null:
+		if not inputs.motion_enabled:
+			motion_multiplier = 0.0
+		else:
+			motion_multiplier = 1.0
+			
 		rotation = inputs.angle
-		velocity = inputs.motion * MOTION_SPEED
+		velocity = inputs.motion * MOTION_SPEED * motion_multiplier
 	elif parent_block != null:
+		parent_block.update_motion_multiplier()
 		update_position_time += delta
 		if update_position_time > STORED_DISTANCE / MOTION_SPEED:
 			update_position_time = 0.
 			parent_block.update_stored_positions()
 		var vd = (parent_block.get_last_stored_position() - global_position).normalized()
-		velocity = vd * MOTION_SPEED
+		velocity = vd * MOTION_SPEED * parent_block.motion_multiplier
 		if get_total_distance() < 148.0:
 			velocity *= 0.5
 		rotation = lerp_angle(rotation, -vd.angle_to(Vector2.UP), delta * 6.0)
@@ -43,6 +50,9 @@ func set_player_name(value: String) -> void:
 	$sprite.modulate = Color(0.5, 0.5, 0.5) + gamestate.get_player_color(value)
 
 func update_stored_positions():
+	if not stored_positions.is_empty():
+		if stored_positions.front().distance_to(global_position) < 2.5:
+			return
 	stored_positions.append(global_position)
 
 func get_last_stored_position():
@@ -62,7 +72,15 @@ func get_total_distance():
 		c = x
 	d += c.distance_to(parent_block.global_position)
 	return d
+	
+func update_motion_multiplier() -> void:
+	if parent_block: 
+		motion_multiplier = parent_block.motion_multiplier
 
+func on_npc_bump() -> void:
+	print("Player %s enters into npc_block" % str(name))
+	snake.call_deferred("add_player_block")
+	
 func _draw():
 	for a in stored_positions:
 		draw_circle(to_local(a), 4, Color.YELLOW_GREEN)

@@ -8,10 +8,14 @@ extends Node2D
 @onready var snake_head = $snake_blocks/head
 @onready var inputs = $Inputs
 
+@onready var BlockScene = preload("res://scenes/block.tscn")
+
 func _ready():
 	if str(name).is_valid_int():
 		$"Inputs/InputsSync".set_multiplayer_authority(str(name).to_int())
-	snake_head.global_position = synced_position
+	snake_head.name = name
+	for block in $snake_blocks.get_children():
+		block.global_position = synced_position
 	snake_head.inputs = inputs
 
 func _physics_process(_delta):
@@ -19,6 +23,7 @@ func _physics_process(_delta):
 		# The client which this player represent will update the controls state, and notify it to everyone.
 		inputs.update(snake_head.global_position, snake_head.rotation)
 	
+	#if inputs.motion_enabled:
 	if multiplayer.multiplayer_peer == null or is_multiplayer_authority():
 		# The server updates the position that will be notified to the clients.
 		synced_position = snake_head.global_position
@@ -31,3 +36,11 @@ func _physics_process(_delta):
 @rpc("call_local")
 func set_player_name(value: String) -> void:
 	snake_head.set_player_name(value)
+
+func add_player_block() -> void:
+	var block = BlockScene.instantiate()
+	var block_parent = $snake_blocks.get_child($snake_blocks.get_child_count() - 1)
+	block.global_position = block_parent.global_position
+	block.rotation = block_parent.rotation
+	block.parent_block = block_parent
+	$snake_blocks.add_child(block)

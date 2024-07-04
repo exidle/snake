@@ -11,6 +11,9 @@ properties/0/replication_mode = 1
 properties/1/path = NodePath(".:angle")
 properties/1/spawn = true
 properties/1/replication_mode = 1
+properties/2/path = NodePath(".:motion_enabled")
+properties/2/spawn = true
+properties/2/replication_mode = 1
 
 [sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_rjqql"]
 properties/0/path = NodePath(".:synced_position")
@@ -26,11 +29,9 @@ script = ExtResource("1_tadlx")
 [node name="snake_blocks" type="Node2D" parent="."]
 
 [node name="head" parent="snake_blocks" node_paths=PackedStringArray("snake") instance=ExtResource("1_6gasg")]
-position = Vector2(323, 180)
 snake = NodePath("../..")
 
 [node name="block" parent="snake_blocks" node_paths=PackedStringArray("parent_block", "snake") instance=ExtResource("1_6gasg")]
-position = Vector2(-5, 4)
 parent_block = NodePath("../head")
 snake = NodePath("../..")
 
