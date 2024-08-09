@@ -156,3 +156,11 @@ func _ready() -> void:
 ## Returns an unique-looking player color based on the name's hash.
 func get_player_color(p_name: String) -> Color:
 	return Color.from_hsv(wrapf(p_name.hash() * 0.001, 0.0, 1.0), 0.6, 1.0)
+
+
+## logging fun
+func ms_log(v: String):
+	var s = "[client]"
+	if is_multiplayer_authority(): s = "[server]"
+	print(s, str(Time.get_ticks_msec()), '# ', v)
+	

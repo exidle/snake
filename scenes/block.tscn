@@ -10,6 +10,7 @@ size = Vector2(128, 128)
 
 [node name="block" type="CharacterBody2D"]
 collision_mask = 16
+motion_mode = 1
 script = ExtResource("1_gm7hs")
 
 [node name="sprite" type="Sprite2D" parent="."]

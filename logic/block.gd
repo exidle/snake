@@ -77,8 +77,9 @@ func update_motion_multiplier() -> void:
 	if parent_block: 
 		motion_multiplier = parent_block.motion_multiplier
 
+@rpc("authority", "call_local", "reliable")
 func on_npc_bump() -> void:
-	print("Player %s enters into npc_block" % str(name))
+	gamestate.ms_log("%s Player %s enters into npc_block" % [name, str(name)])
 	snake.call_deferred("add_player_block")
 	
 func _draw():

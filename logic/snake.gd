@@ -43,4 +43,5 @@ func add_player_block() -> void:
 	block.global_position = block_parent.global_position
 	block.rotation = block_parent.rotation
 	block.parent_block = block_parent
+	block.snake = self
 	$snake_blocks.add_child(block)

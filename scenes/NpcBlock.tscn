@@ -45,6 +45,7 @@ size = Vector2(128, 128)
 [node name="npc_block" type="CharacterBody2D"]
 collision_layer = 2
 collision_mask = 3
+motion_mode = 1
 script = ExtResource("1_h5j8b")
 
 [node name="sprite" type="Sprite2D" parent="."]
