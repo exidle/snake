@@ -9,15 +9,19 @@ const STORED_DISTANCE = 30.0
 
 @export var parent_block: CharacterBody2D = null
 @export var snake: Node2D = null
+@export var value: int = 1
 @onready var inputs: Node = null
 
 @onready var stored_positions: Array = []
 
 var update_position_time: float = 0.
 
+func _ready() -> void:
+	update_text_label()
+
 func _physics_process(delta):
 	# Everybody runs physics. i.e. clients try to predict where they will be during the next frame.
-	if inputs != null and parent_block == null:
+	if inputs != null and not has_parent():
 		if not inputs.motion_enabled:
 			motion_multiplier = 0.0
 		else:
@@ -25,12 +29,12 @@ func _physics_process(delta):
 			
 		rotation = inputs.angle
 		velocity = inputs.motion * MOTION_SPEED * motion_multiplier
-	elif parent_block != null:
+	elif has_parent():
 		parent_block.update_motion_multiplier()
 		update_position_time += delta
 		if update_position_time > STORED_DISTANCE / MOTION_SPEED:
 			update_position_time = 0.
-			parent_block.update_stored_positions()
+			if snake.is_movement_enabled(): parent_block.update_stored_positions()
 		var vd = (parent_block.get_last_stored_position() - global_position).normalized()
 		velocity = vd * MOTION_SPEED * parent_block.motion_multiplier
 		if get_total_distance() < 148.0:
@@ -54,6 +58,7 @@ func update_stored_positions():
 		if stored_positions.front().distance_to(global_position) < 2.5:
 			return
 	stored_positions.append(global_position)
+	$DebugLabel.text = str(stored_positions.size())
 
 func get_last_stored_position():
 	if stored_positions.is_empty(): return global_position
@@ -74,14 +79,25 @@ func get_total_distance():
 	return d
 	
 func update_motion_multiplier() -> void:
-	if parent_block: 
+	if has_parent(): 
 		motion_multiplier = parent_block.motion_multiplier
 
 @rpc("authority", "call_local", "reliable")
-func on_npc_bump() -> void:
-	gamestate.ms_log("%s Player %s enters into npc_block" % [name, str(name)])
-	snake.call_deferred("add_player_block")
-	
+func bump_with_block(block_value: int) -> void:
+	gamestate.ms_log("%s Player %s enters into npc block value: %d" % [name, str(name), value])
+	assert(value >= block_value, "Cannot eat bigger block")
+	snake.call_deferred("add_player_block", value)
+
+func collide_with_head():
+	gamestate.ms_log("%s The collision with other head for a block" % name)
+	#if not has_parent(): snake.game_over()
+
+func has_parent() -> bool:
+	return parent_block != null
+
+func update_text_label() -> void:
+	$TextLabel.text = gamestate.get_block_label_text(value)
+
 func _draw():
 	for a in stored_positions:
 		draw_circle(to_local(a), 4, Color.YELLOW_GREEN)

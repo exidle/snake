@@ -1,12 +1,18 @@
-[gd_scene load_steps=8 format=3 uid="uid://de3766wqx1bna"]
+[gd_scene load_steps=10 format=3 uid="uid://de3766wqx1bna"]
 
 [ext_resource type="Script" path="res://logic/npc_block.gd" id="1_h5j8b"]
 [ext_resource type="Texture2D" uid="uid://c1pn3f7det0ds" path="res://icon.svg" id="1_juvvp"]
 [ext_resource type="FontFile" uid="uid://bnl1vkol8ivdn" path="res://montserrat.otf" id="2_05vul"]
-[ext_resource type="LabelSettings" uid="uid://csnrurp4sehdq" path="res://scenes/label_font_conf.tres" id="2_frqte"]
+[ext_resource type="LabelSettings" uid="uid://c5mhjkriklcok" path="res://scenes/number_label_conf.tres" id="4_mjco8"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_k63p8"]
+font_size = 24
+outline_size = 8
+outline_color = Color(0.286275, 0.286275, 0.286275, 1)
 
 [sub_resource type="Animation" id="Animation_ojo5f"]
 resource_name = "Dissolve"
+length = 0.1
 tracks/0/type = "method"
 tracks/0/imported = false
 tracks/0/enabled = true
@@ -14,7 +20,7 @@ tracks/0/path = NodePath(".")
 tracks/0/interp = 1
 tracks/0/loop_wrap = true
 tracks/0/keys = {
-"times": PackedFloat32Array(1),
+"times": PackedFloat32Array(0.1),
 "transitions": PackedFloat32Array(1),
 "values": [{
 "args": [],
@@ -39,12 +45,15 @@ _data = {
 "Dissolve": SubResource("Animation_ojo5f")
 }
 
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_oku2c"]
+size = Vector2(130, 130)
+
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_kt8jt"]
 size = Vector2(128, 128)
 
 [node name="npc_block" type="CharacterBody2D"]
 collision_layer = 2
-collision_mask = 3
+collision_mask = 7
 motion_mode = 1
 script = ExtResource("1_h5j8b")
 
@@ -66,8 +75,24 @@ grow_vertical = 2
 theme_override_fonts/font = ExtResource("2_05vul")
 theme_override_font_sizes/font_size = 20
 text = "NPC"
-label_settings = ExtResource("2_frqte")
+label_settings = SubResource("LabelSettings_k63p8")
 horizontal_alignment = 1
+
+[node name="ValueLabel" type="Label" parent="sprite"]
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -127.0
+offset_top = -75.0
+offset_bottom = -52.0
+grow_horizontal = 2
+grow_vertical = 2
+text = "2"
+label_settings = ExtResource("4_mjco8")
+horizontal_alignment = 1
+vertical_alignment = 1
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]
 libraries = {
@@ -76,9 +101,10 @@ libraries = {
 
 [node name="collision_area" type="Area2D" parent="."]
 collision_layer = 2
+collision_mask = 4
 
-[node name="shape" type="CollisionShape2D" parent="collision_area"]
-shape = SubResource("RectangleShape2D_kt8jt")
+[node name="CollisionShape2D" type="CollisionShape2D" parent="collision_area"]
+shape = SubResource("RectangleShape2D_oku2c")
 
 [node name="shape" type="CollisionShape2D" parent="."]
 shape = SubResource("RectangleShape2D_kt8jt")

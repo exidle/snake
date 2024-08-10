@@ -1,8 +1,10 @@
-[gd_scene load_steps=2 format=3 uid="uid://bw2lw6jo1yq2e"]
+[gd_scene load_steps=3 format=3 uid="uid://bw2lw6jo1yq2e"]
 
+[ext_resource type="Script" path="res://logic/worldlogic.gd" id="1_2h6ax"]
 [ext_resource type="PackedScene" uid="uid://de3766wqx1bna" path="res://scenes/NpcBlock.tscn" id="1_nce1e"]
 
 [node name="World" type="Node2D"]
+script = ExtResource("1_2h6ax")
 
 [node name="SpawnPoints" type="Node2D" parent="."]
 
@@ -28,3 +30,15 @@ spawn_path = NodePath("../Players")
 
 [node name="npc_block" parent="NpcBlocks" instance=ExtResource("1_nce1e")]
 position = Vector2(404, 321)
+value = 2
+
+[node name="CanvasLayer" type="CanvasLayer" parent="."]
+
+[node name="CreateNpcBtn" type="Button" parent="CanvasLayer"]
+offset_left = 509.0
+offset_top = 41.0
+offset_right = 612.0
+offset_bottom = 72.0
+text = "CREATE NPC"
+
+[connection signal="pressed" from="CanvasLayer/CreateNpcBtn" to="." method="_on_create_npc_btn_pressed"]

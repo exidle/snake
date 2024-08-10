@@ -30,18 +30,38 @@ func _physics_process(_delta):
 		synced_rotation = snake_head.rotation
 	else:
 		# The client simply updates the position to the last known one.
-		snake_head.position = synced_position
+		snake_head.global_position = synced_position
 		snake_head.rotation = synced_rotation
 
 @rpc("call_local")
 func set_player_name(value: String) -> void:
 	snake_head.set_player_name(value)
 
-func add_player_block() -> void:
+func add_player_block(value: int) -> void:
 	var block = BlockScene.instantiate()
 	var block_parent = $snake_blocks.get_child($snake_blocks.get_child_count() - 1)
 	block.global_position = block_parent.global_position
 	block.rotation = block_parent.rotation
 	block.parent_block = block_parent
 	block.snake = self
+	block.value = value
+	block.update_text_label()
 	$snake_blocks.add_child(block)
+
+func collide_with_other_snake(body) -> void:
+	# Body is not a head
+	gamestate.ms_log("Will aquire block")
+	#if body.has_parent():
+		##aquire_block(body)
+	## Body is head
+	#else:
+		##aquire_block(body)
+
+func aquire_block(body):
+	add_player_block(2)
+
+func game_over():
+	queue_free()
+
+func is_movement_enabled() -> bool:
+	return inputs.motion_enabled
