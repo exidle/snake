@@ -45,3 +45,8 @@ replication_config = SubResource("SceneReplicationConfig_cg2u3")
 
 [node name="Synchronizer" type="MultiplayerSynchronizer" parent="."]
 replication_config = SubResource("SceneReplicationConfig_rjqql")
+
+[node name="ChainDoublingTimer" type="Timer" parent="."]
+one_shot = true
+
+[connection signal="timeout" from="ChainDoublingTimer" to="." method="_on_chain_doubling_timer_timeout"]

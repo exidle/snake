@@ -55,3 +55,9 @@ offset_right = -13.0
 offset_bottom = 55.0
 text = "
 "
+
+[node name="ImmuteTimer" type="Timer" parent="."]
+wait_time = 0.5
+one_shot = true
+
+[connection signal="timeout" from="ImmuteTimer" to="." method="_on_immute_timer_timeout"]

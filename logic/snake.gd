@@ -10,13 +10,21 @@ extends Node2D
 
 @onready var BlockScene = preload("res://scenes/block.tscn")
 
+@onready var blocks = [snake_head]
+
+const ChainDoubleStartTimeout = 0.5
+var chain_double_idx = -1
+
 func _ready():
 	if str(name).is_valid_int():
 		$"Inputs/InputsSync".set_multiplayer_authority(str(name).to_int())
 	snake_head.name = name
 	for block in $snake_blocks.get_children():
 		block.global_position = synced_position
+		if block != snake_head:
+			blocks.append(block)
 	snake_head.inputs = inputs
+	$ChainDoublingTimer.wait_time = ChainDoubleStartTimeout
 
 func _physics_process(_delta):
 	if multiplayer.multiplayer_peer == null or str(multiplayer.get_unique_id()) == str(name):
@@ -39,14 +47,67 @@ func set_player_name(value: String) -> void:
 
 func add_player_block(value: int) -> void:
 	var block = BlockScene.instantiate()
-	var block_parent = $snake_blocks.get_child($snake_blocks.get_child_count() - 1)
-	block.global_position = block_parent.global_position
-	block.rotation = block_parent.rotation
-	block.parent_block = block_parent
-	block.snake = self
 	block.value = value
-	block.update_text_label()
+	var parent_pos = find_parent_block(value)
+	gamestate.ms_log("add_player_block parent idx = %d" % parent_pos)
+	var parent_block = blocks[parent_pos]
+	parent_block.stored_positions.clear()
+	blocks.insert(parent_pos + 1, block)
 	$snake_blocks.add_child(block)
+	block.block_init(parent_block, value)
+
+func get_parent_block(block):
+	var idx = blocks.find(block)
+	assert(idx >= 1, "Block is not valid!")
+	return blocks[idx - 1]
+
+func has_parent_block(block):
+	return block != snake_head
+
+## Returns index for the rightmost element such that it's value >= value 
+## Example: 8 4 (4) 2 2 find_parent_block(4) returns 2
+func find_parent_block(value) -> int:
+	assert(value <= snake_head.value, "Wrong value")
+	for idx in range(blocks.size() - 1, 0, -1):
+		var block = blocks[idx]
+		if block.value >= value: return idx
+	return 0
+
+func verify_doubling(block):
+	var idx = blocks.find(block)
+	assert(idx != -1, "Block is not present in blocks!")
+	if check_doubling(idx):
+		print("CD - True")
+		$ChainDoublingTimer.wait_time = ChainDoubleStartTimeout
+		perform_doubling(idx)
+	else:
+		print("No doubling")
+
+func perform_doubling(idx):
+	gamestate.ms_log("Perform doubling, idx = %d" % idx)
+	assert(idx > 0, "Cant initiate doubing from head!")
+	var block = blocks[idx - 1]
+	block.value += 1
+	block.update_text_label()
+	# Remove initiator block
+	var initiator_block = blocks[idx]
+	initiator_block.queue_free()
+	blocks.remove_at(idx)
+	if blocks.size() == 1: snake_head.stored_positions.clear()
+	if check_doubling(idx - 1) and $ChainDoublingTimer.is_stopped(): 
+		chain_double_idx = idx - 1
+		$ChainDoublingTimer.start()
+
+## Returns true if a block before one with index idx has same value
+func check_doubling(idx: int):
+	return idx > 0 and blocks[idx - 1].value == blocks[idx].value
+
+func _on_chain_doubling_timer_timeout():
+	$ChainDoublingTimer.wait_time /= 2.0
+	if check_doubling(chain_double_idx): 
+		perform_doubling(chain_double_idx)
+	else:
+		chain_double_idx = -1
 
 func collide_with_other_snake(body) -> void:
 	# Body is not a head
