@@ -41,4 +41,17 @@ offset_right = 612.0
 offset_bottom = 72.0
 text = "CREATE NPC"
 
+[node name="HSlider" type="HSlider" parent="CanvasLayer"]
+offset_left = 446.0
+offset_top = 18.0
+offset_right = 679.0
+offset_bottom = 34.0
+min_value = 1.0
+max_value = 5.0
+value = 1.0
+scrollable = false
+tick_count = 5
+ticks_on_borders = true
+
 [connection signal="pressed" from="CanvasLayer/CreateNpcBtn" to="." method="_on_create_npc_btn_pressed"]
+[connection signal="value_changed" from="CanvasLayer/HSlider" to="." method="_on_h_slider_value_changed"]

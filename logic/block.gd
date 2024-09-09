@@ -99,7 +99,7 @@ func bump_with_block(block_value: int) -> void:
 	if not $ImmuteTimer.is_stopped():
 		gamestate.ms_log("%s The block is immuted" % name)
 		return
-	gamestate.ms_log("%s Player %s enters into npc block value: %d" % [name, str(name), block_value])
+	gamestate.ms_log("%s Player %s (%d) enters into npc block value: %d" % [name, str(name), value, block_value])
 	assert(value >= block_value, "Cannot eat bigger block")
 	snake.call_deferred("add_player_block", block_value)
 

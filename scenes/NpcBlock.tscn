@@ -55,6 +55,7 @@ size = Vector2(128, 128)
 collision_layer = 2
 collision_mask = 7
 motion_mode = 1
+platform_on_leave = 2
 script = ExtResource("1_h5j8b")
 
 [node name="sprite" type="Sprite2D" parent="."]
@@ -100,7 +101,7 @@ libraries = {
 }
 
 [node name="collision_area" type="Area2D" parent="."]
-collision_layer = 2
+collision_layer = 32
 collision_mask = 4
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="collision_area"]

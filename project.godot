@@ -44,6 +44,7 @@ toggle_motion={
 2d_physics/layer_3="snake_head"
 2d_physics/layer_4="head_collider"
 2d_physics/layer_5="walls"
+2d_physics/layer_6="npc_block_collision_area"
 
 [rendering]
 
