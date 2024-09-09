@@ -164,16 +164,16 @@ func ms_log(v: String):
 	if is_multiplayer_authority(): s = "[server]"
 	print(s, str(Time.get_ticks_msec()), '# ', v)
 
-func get_block_label_text(value) -> String:
-	var number = pow(2, value) as int
+func get_block_label_text(value: int) -> String:
+	var number:int = pow(2, value) as int
 	var suffix = ""
 	if value >= 10:
 		suffix = "K"
-		number = (number / 1024) as int
+		number /= 1024
 	elif value >= 20:
 		suffix = "M"
-		number = (number / 1048576) as int
+		number /= 1048576
 	elif value >= 30:
 		suffix = "T"
-		number = (number / 1073741824) as int
+		number /= 1073741824
 	return str(number) + suffix

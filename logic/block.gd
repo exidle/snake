@@ -59,11 +59,11 @@ func get_parent_block():
 	return snake.get_parent_block(self)
 
 @rpc("call_local")
-func set_player_name(value: String) -> void:
-	$label.text = value
+func set_player_name(player_name: String) -> void:
+	$label.text = player_name
 	# Assign a random color to the player based on its name.
-	$label.modulate = gamestate.get_player_color(value)
-	$sprite.modulate = Color(0.5, 0.5, 0.5) + gamestate.get_player_color(value)
+	$label.modulate = gamestate.get_player_color(player_name)
+	$sprite.modulate = Color(0.5, 0.5, 0.5) + gamestate.get_player_color(player_name)
 
 func update_stored_positions():
 	if not stored_positions.is_empty():

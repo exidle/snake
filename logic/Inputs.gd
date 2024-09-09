@@ -37,4 +37,3 @@ func update(center: Vector2, rot: float) -> void:
 			angle = tot_rot
 	
 		
-

@@ -109,7 +109,7 @@ func _on_chain_doubling_timer_timeout():
 	else:
 		chain_double_idx = -1
 
-func collide_with_other_snake(body) -> void:
+func collide_with_other_snake(_body) -> void:
 	# Body is not a head
 	gamestate.ms_log("Will aquire block")
 	#if body.has_parent():
@@ -118,7 +118,7 @@ func collide_with_other_snake(body) -> void:
 	#else:
 		##aquire_block(body)
 
-func aquire_block(body):
+func aquire_block(_body):
 	add_player_block(2)
 
 func game_over():
