@@ -8,8 +8,8 @@ func _ready():
 ## The callback is called when snake head is touching other objects that
 ## are forming snake
 func _on_body_entered(body):
-	if body.has_method("collide_with_head") and body.snake != snake:
-		body.collide_with_head()
+	if body.has_method("collide_with_head") and body.snake != snake and body.is_processing_enabled():
+		#body.collide_with_head(snake.get)
 		snake.collide_with_other_snake(body)
 
 

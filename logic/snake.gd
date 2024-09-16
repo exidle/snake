@@ -14,6 +14,7 @@ extends Node2D
 
 const ChainDoubleStartTimeout = 0.5
 var chain_double_idx = -1
+@onready var motion_multiplier = 1.0
 
 func _ready():
 	if str(name).is_valid_int():
@@ -48,20 +49,25 @@ func set_player_name(value: String) -> void:
 func add_player_block(value: int) -> void:
 	var block = BlockScene.instantiate()
 	block.value = value
+	var parent_block = insert_block(block)
+	$snake_blocks.add_child(block)
+	block.block_init(parent_block, value, $snake_blocks)
+
+func insert_block(block) -> CharacterBody2D:
+	var value = block.value
 	var parent_pos = find_parent_block(value)
-	gamestate.ms_log("add_player_block parent idx = %d" % parent_pos)
+	gamestate.ms_log("insert_block parent idx = %d" % parent_pos)
 	var parent_block = blocks[parent_pos]
 	parent_block.stored_positions.clear()
 	blocks.insert(parent_pos + 1, block)
-	$snake_blocks.add_child(block)
-	block.block_init(parent_block, value)
+	return parent_block
 
-func get_parent_block(block):
+func get_parent_block(block) -> CharacterBody2D:
 	var idx = blocks.find(block)
 	assert(idx >= 1, "Block is not valid!")
 	return blocks[idx - 1]
 
-func has_parent_block(block):
+func has_parent_block(block) -> bool:
 	return block != snake_head
 
 ## Returns index for the rightmost element such that it's value >= value 
@@ -73,7 +79,7 @@ func find_parent_block(value) -> int:
 		if block.value >= value: return idx
 	return 0
 
-func verify_doubling(block):
+func verify_doubling(block) -> void:
 	var idx = blocks.find(block)
 	assert(idx != -1, "Block is not present in blocks!")
 	if check_doubling(idx):
@@ -83,7 +89,7 @@ func verify_doubling(block):
 	else:
 		print("No doubling")
 
-func perform_doubling(idx):
+func perform_doubling(idx) -> void:
 	gamestate.ms_log("Perform doubling, idx = %d" % idx)
 	assert(idx > 0, "Cant initiate doubing from head!")
 	var block = blocks[idx - 1]
@@ -99,7 +105,7 @@ func perform_doubling(idx):
 		$ChainDoublingTimer.start()
 
 ## Returns true if a block before one with index idx has same value
-func check_doubling(idx: int):
+func check_doubling(idx: int) -> bool:
 	return idx > 0 and blocks[idx - 1].value == blocks[idx].value
 
 func _on_chain_doubling_timer_timeout():
@@ -109,19 +115,41 @@ func _on_chain_doubling_timer_timeout():
 	else:
 		chain_double_idx = -1
 
-func collide_with_other_snake(_body) -> void:
-	# Body is not a head
-	gamestate.ms_log("Will aquire block")
-	#if body.has_parent():
-		##aquire_block(body)
-	## Body is head
-	#else:
-		##aquire_block(body)
+## This snake is colliding with other snake's body
+## result: 
+## 1. do nothing if values are same
+## 2. aquire other's snake body if body value is less
+## 3. game over if body value is greater
+func collide_with_other_snake(body) -> void:
+	var head_value = snake_head.value
+	if head_value == body.value:
+		gamestate.ms_log("collide: do nothing")
+	elif head_value > body.value:
+		gamestate.ms_log("collide: aquire other")
+		if body != body.snake.snake_head:
+			aquire_block(body)
+		else:
+			call_deferred("add_player_block", body.value)
+	else:
+		gamestate.ms_log("collide: game over")
+		game_over()
 
-func aquire_block(_body):
-	add_player_block(2)
+func aquire_block(block) -> void:
+	gamestate.ms_log(name + ": aquire_block")
+	var other_snake = block.snake
+	other_snake.remove_block(block)
+	var parent_block = insert_block(block)
+	block.call_deferred("block_init", parent_block, block.value, $snake_blocks)
 
-func game_over():
+func remove_block(block) -> void:
+	gamestate.ms_log(name + ": remove_block")
+	block.set_processing(false)
+	#if block != snake_head:
+		#var parent = get_parent_block(block)
+		#parent.clear_stored_positions()
+	blocks.erase(block)
+
+func game_over() -> void:
 	queue_free()
 
 func is_movement_enabled() -> bool:
