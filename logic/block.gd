@@ -5,6 +5,7 @@ const MOTION_SPEED = 90.0
 
 ## The distance between stored positions (pixels).
 const STORED_DISTANCE = 30.0
+const BETWEEN_BLOCKS_DISTANCE = 128 + 20
 
 @export var snake: Node2D = null
 @export var value: int = 1
@@ -53,8 +54,8 @@ func _physics_process(delta):
 			if snake.is_movement_enabled(): parent_block.update_stored_positions()
 		var vd = (parent_block.get_last_stored_position() - global_position).normalized()
 		velocity = vd * MOTION_SPEED * snake.motion_multiplier
-		if get_total_distance() < 148.0:
-			velocity *= 0.5
+		if get_total_distance() < BETWEEN_BLOCKS_DISTANCE:
+			velocity *= 0.
 		rotation = lerp_angle(rotation, -vd.angle_to(Vector2.UP), delta * 6.0)
 		if global_position.distance_to(parent_block.get_last_stored_position()) < 5.:
 			parent_block.remove_last_stored_position()
@@ -75,7 +76,7 @@ func set_player_name(player_name: String) -> void:
 
 func update_stored_positions():
 	if not stored_positions.is_empty():
-		if stored_positions.front().distance_to(global_position) < 2.5:
+		if stored_positions.back().distance_to(global_position) < 2.5:
 			return
 	stored_positions.append(global_position)
 	$DebugLabel.text = str(stored_positions.size())
@@ -126,8 +127,10 @@ func _draw():
 
 ## + Proper doubling
 ## + Place in right position
-## Eat part of snake
-## Eat other snake head
+## + Eat part of snake
+## + Eat other snake head
+## + Stop block if parent is stopped
+
 
 func _on_immute_timer_timeout():
 	snake.verify_doubling(self)
