@@ -1,8 +1,9 @@
-[gd_scene load_steps=4 format=3 uid="uid://bw2lw6jo1yq2e"]
+[gd_scene load_steps=5 format=3 uid="uid://bw2lw6jo1yq2e"]
 
 [ext_resource type="Script" path="res://logic/worldlogic.gd" id="1_2h6ax"]
 [ext_resource type="PackedScene" uid="uid://de3766wqx1bna" path="res://scenes/NpcBlock.tscn" id="1_nce1e"]
 [ext_resource type="Script" path="res://logic/npc_blocks_spawner.gd" id="2_lo7ip"]
+[ext_resource type="PackedScene" uid="uid://cixm0eqtl20j3" path="res://scenes/Level0.tscn" id="4_fm8wl"]
 
 [node name="World" type="Node2D"]
 script = ExtResource("1_2h6ax")
@@ -10,18 +11,19 @@ script = ExtResource("1_2h6ax")
 [node name="SpawnPoints" type="Node2D" parent="."]
 
 [node name="0" type="Marker2D" parent="SpawnPoints"]
-position = Vector2(127, 131)
+position = Vector2(248, 215)
 
 [node name="1" type="Marker2D" parent="SpawnPoints"]
-position = Vector2(998, 124)
+position = Vector2(201, -222)
 
 [node name="2" type="Marker2D" parent="SpawnPoints"]
-position = Vector2(140, 514)
+position = Vector2(-220, 211)
 
 [node name="3" type="Marker2D" parent="SpawnPoints"]
-position = Vector2(1030, 557)
+position = Vector2(-255, -213)
 
 [node name="Players" type="Node2D" parent="."]
+z_index = 10
 
 [node name="PlayerSpawner" type="MultiplayerSpawner" parent="."]
 _spawnable_scenes = PackedStringArray("res://scenes/snake.tscn")
@@ -32,9 +34,10 @@ spawn_path = NodePath("../NpcBlocks")
 script = ExtResource("2_lo7ip")
 
 [node name="NpcBlocks" type="Node2D" parent="."]
+z_index = 9
 
 [node name="npc_block" parent="NpcBlocks" instance=ExtResource("1_nce1e")]
-position = Vector2(404, 321)
+position = Vector2(646, 644)
 value = 2
 
 [node name="CanvasLayer" type="CanvasLayer" parent="."]
@@ -57,6 +60,15 @@ value = 1.0
 scrollable = false
 tick_count = 5
 ticks_on_borders = true
+
+[node name="Level0" parent="." instance=ExtResource("4_fm8wl")]
+scale = Vector2(2, 2)
+
+[node name="Camera2D" type="Camera2D" parent="."]
+position_smoothing_enabled = true
+drag_horizontal_enabled = true
+drag_vertical_enabled = true
+editor_draw_drag_margin = true
 
 [connection signal="despawned" from="NpcBlocksSpawner" to="NpcBlocksSpawner" method="_on_despawned"]
 [connection signal="pressed" from="CanvasLayer/CreateNpcBtn" to="." method="_on_create_npc_btn_pressed"]

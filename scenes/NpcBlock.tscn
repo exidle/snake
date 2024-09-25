@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" path="res://logic/npc_block.gd" id="1_h5j8b"]
 [ext_resource type="Texture2D" uid="uid://c1pn3f7det0ds" path="res://icon.svg" id="1_juvvp"]
-[ext_resource type="FontFile" uid="uid://bnl1vkol8ivdn" path="res://montserrat.otf" id="2_05vul"]
+[ext_resource type="FontFile" uid="uid://bnl1vkol8ivdn" path="res://stuff/montserrat.otf" id="2_05vul"]
 [ext_resource type="LabelSettings" uid="uid://c5mhjkriklcok" path="res://scenes/number_label_conf.tres" id="4_mjco8"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_k63p8"]

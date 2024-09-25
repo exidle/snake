@@ -154,3 +154,9 @@ func game_over() -> void:
 
 func is_movement_enabled() -> bool:
 	return inputs.motion_enabled
+
+func get_head_position():
+	if snake_head.process_enabled:
+		return snake_head.global_position
+	else:
+		return null

@@ -135,6 +135,8 @@ func begin_game() -> void:
 		# The RPC must be called after the player is added to the scene tree.
 		player.set_player_name.rpc(player_name if p_id == multiplayer.get_unique_id() else players[p_id])
 
+func is_main_player(p_id):
+	return p_id == str(multiplayer.get_unique_id())
 
 func end_game() -> void:
 	if has_node("/root/World"):

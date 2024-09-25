@@ -3,7 +3,7 @@
 [ext_resource type="Script" path="res://logic/block.gd" id="1_gm7hs"]
 [ext_resource type="Texture2D" uid="uid://c1pn3f7det0ds" path="res://icon.svg" id="2_1qm0b"]
 [ext_resource type="LabelSettings" uid="uid://c5mhjkriklcok" path="res://scenes/number_label_conf.tres" id="4_7rvyf"]
-[ext_resource type="FontFile" uid="uid://bnl1vkol8ivdn" path="res://montserrat.otf" id="4_8iarv"]
+[ext_resource type="FontFile" uid="uid://bnl1vkol8ivdn" path="res://stuff/montserrat.otf" id="4_8iarv"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_5or1k"]
 size = Vector2(128, 128)
