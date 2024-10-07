@@ -1,4 +1,4 @@
-extends CharacterBody2D
+extends RigidBody2D
 
 @onready var is_active = true
 @export_range(1, 39) var value = 1

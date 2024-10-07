@@ -1,7 +1,7 @@
 extends CharacterBody2D
 
 ## The player's movement speed (in pixels per second).
-const MOTION_SPEED = 90.0
+const MOTION_SPEED = 290.0
 
 ## The distance between stored positions (pixels).
 const STORED_DISTANCE = 30.0
@@ -56,6 +56,11 @@ func _physics_process(delta):
 		velocity = vd * MOTION_SPEED * snake.motion_multiplier
 		if get_total_distance() < BETWEEN_BLOCKS_DISTANCE:
 			velocity *= 0.
+		if get_total_distance() > BETWEEN_BLOCKS_DISTANCE + 20:
+			velocity *= 2.
+		if get_total_distance() > BETWEEN_BLOCKS_DISTANCE + 40:
+			global_position = parent_block.global_position
+			parent_block.clear_stored_positions()
 		rotation = lerp_angle(rotation, -vd.angle_to(Vector2.UP), delta * 6.0)
 		if global_position.distance_to(parent_block.get_last_stored_position()) < 5.:
 			parent_block.remove_last_stored_position()

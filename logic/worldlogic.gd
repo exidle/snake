@@ -38,4 +38,45 @@ func _process(delta: float) -> void:
 				if p: $Camera2D.position = p
 				break
 	camera_update_timeout += delta
-			
+	
+	const CAMERA_SPEED = 400
+	if Input.is_action_pressed("CameraDown"):
+		$DebugCamera.position.y += delta * CAMERA_SPEED
+	if Input.is_action_pressed("CameraUp"):
+		$DebugCamera.position.y -= delta * CAMERA_SPEED
+	if Input.is_action_pressed("CameraLeft"):
+		$DebugCamera.position.x -= delta * CAMERA_SPEED
+	if Input.is_action_pressed("CameraRight"):
+		$DebugCamera.position.x += delta * CAMERA_SPEED
+	
+	const CAMERA_MIN_VALUE = Vector2(0.2, 0.2)
+	const CAMERA_MAX_VALUE = Vector2(6, 6)
+	
+	if Input.is_action_just_pressed("CameraZoomOut"):
+		var zoom = $DebugCamera.zoom + 0.33*Vector2.ONE
+		$DebugCamera.zoom = clamp(zoom, CAMERA_MIN_VALUE, CAMERA_MAX_VALUE)
+		
+	if Input.is_action_just_pressed("CameraZoomIn"):
+		var zoom = $DebugCamera.zoom - 0.33*Vector2.ONE
+		$DebugCamera.zoom = clamp(zoom, CAMERA_MIN_VALUE, CAMERA_MAX_VALUE)
+	
+	if is_multiplayer_authority() and $NpcBlocks.get_child_count() < 15 and $NpcSpawnTimer.is_stopped():
+		$NpcSpawnTimer.start()
+
+func _on_set_camera_btn_pressed() -> void:
+	$Camera2D.enabled = false
+	$DebugCamera.enabled = true
+
+func _on_set_mc_camera_btn_pressed() -> void:
+	$DebugCamera.enabled = false
+	$Camera2D.enabled = true
+	$DebugCamera.position = Vector2.ZERO
+	$DebugCamera.zoom = Vector2(4,4)
+
+func _on_npc_spawn_timer_timeout() -> void:
+	gamestate.ms_log("On spawn TO")
+	gamestate.spawn_npc()
+
+
+func _on_check_npc_amount_btn_pressed() -> void:
+	gamestate.ms_log("Theree are currently:  %d" % $NpcBlocks.get_child_count())

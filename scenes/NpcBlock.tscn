@@ -51,11 +51,9 @@ size = Vector2(130, 130)
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_kt8jt"]
 size = Vector2(128, 128)
 
-[node name="npc_block" type="CharacterBody2D"]
+[node name="npc_block" type="RigidBody2D"]
 collision_layer = 2
-collision_mask = 7
-motion_mode = 1
-platform_on_leave = 2
+collision_mask = 23
 script = ExtResource("1_h5j8b")
 
 [node name="sprite" type="Sprite2D" parent="."]

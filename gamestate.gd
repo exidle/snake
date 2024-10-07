@@ -107,6 +107,16 @@ func join_game(ip: String, new_player_name: String) -> void:
 func get_player_list() -> Array:
 	return players.values()
 
+func spawn_npc() -> void:
+	var world: Node2D = get_tree().get_root().get_node("World")
+	var npc_spawner = world.get_node("NpcBlocksSpawner")
+	for p_id: int in range(0, 8):
+		var spawn_pos: Vector2 = world.get_node("NpcPositions/" + str(p_id)).position
+		var value = 1
+		for repeat in range(1, 6):	
+			npc_spawner.spawn([spawn_pos, value])
+
+
 
 func begin_game() -> void:
 	assert(multiplayer.is_server())
@@ -134,6 +144,8 @@ func begin_game() -> void:
 		world.get_node("Players").add_child(player)
 		# The RPC must be called after the player is added to the scene tree.
 		player.set_player_name.rpc(player_name if p_id == multiplayer.get_unique_id() else players[p_id])
+
+	spawn_npc()
 
 func is_main_player(p_id):
 	return p_id == str(multiplayer.get_unique_id())

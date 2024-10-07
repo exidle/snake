@@ -61,6 +61,27 @@ scrollable = false
 tick_count = 5
 ticks_on_borders = true
 
+[node name="SetCameraBtn" type="Button" parent="CanvasLayer"]
+offset_left = 942.0
+offset_top = 18.0
+offset_right = 1111.0
+offset_bottom = 49.0
+text = "SET_DEBUG_CAMERA"
+
+[node name="SetMcCameraBtn" type="Button" parent="CanvasLayer"]
+offset_left = 942.0
+offset_top = 72.0
+offset_right = 1111.0
+offset_bottom = 103.0
+text = "SET_MC_CAMERA"
+
+[node name="CheckNpcAmountBtn" type="Button" parent="CanvasLayer"]
+offset_left = 942.0
+offset_top = 126.0
+offset_right = 1111.0
+offset_bottom = 157.0
+text = "CHECK_NPC_COUNT"
+
 [node name="Level0" parent="." instance=ExtResource("4_fm8wl")]
 scale = Vector2(2, 2)
 
@@ -70,6 +91,43 @@ drag_horizontal_enabled = true
 drag_vertical_enabled = true
 editor_draw_drag_margin = true
 
+[node name="NpcPositions" type="Node2D" parent="."]
+
+[node name="0" type="Marker2D" parent="NpcPositions"]
+position = Vector2(-271, -2237)
+
+[node name="1" type="Marker2D" parent="NpcPositions"]
+position = Vector2(-2288, -288)
+
+[node name="2" type="Marker2D" parent="NpcPositions"]
+position = Vector2(-2288, 441)
+
+[node name="3" type="Marker2D" parent="NpcPositions"]
+position = Vector2(-288, 2373)
+
+[node name="4" type="Marker2D" parent="NpcPositions"]
+position = Vector2(2272, 339)
+
+[node name="5" type="Marker2D" parent="NpcPositions"]
+position = Vector2(509, -2238)
+
+[node name="6" type="Marker2D" parent="NpcPositions"]
+position = Vector2(2200, -2283)
+
+[node name="7" type="Marker2D" parent="NpcPositions"]
+position = Vector2(1373, -1509)
+
+[node name="DebugCamera" type="Camera2D" parent="."]
+zoom = Vector2(0.345, 0.345)
+
+[node name="NpcSpawnTimer" type="Timer" parent="."]
+wait_time = 20.0
+one_shot = true
+
 [connection signal="despawned" from="NpcBlocksSpawner" to="NpcBlocksSpawner" method="_on_despawned"]
 [connection signal="pressed" from="CanvasLayer/CreateNpcBtn" to="." method="_on_create_npc_btn_pressed"]
 [connection signal="value_changed" from="CanvasLayer/HSlider" to="." method="_on_h_slider_value_changed"]
+[connection signal="pressed" from="CanvasLayer/SetCameraBtn" to="." method="_on_set_camera_btn_pressed"]
+[connection signal="pressed" from="CanvasLayer/SetMcCameraBtn" to="." method="_on_set_mc_camera_btn_pressed"]
+[connection signal="pressed" from="CanvasLayer/CheckNpcAmountBtn" to="." method="_on_check_npc_amount_btn_pressed"]
+[connection signal="timeout" from="NpcSpawnTimer" to="." method="_on_npc_spawn_timer_timeout"]
