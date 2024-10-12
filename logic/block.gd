@@ -66,7 +66,8 @@ func _physics_process(delta):
 			parent_block.remove_last_stored_position()
 
 	move_and_slide()
-	queue_redraw()
+	if OS.is_debug_build():
+		queue_redraw()
 
 func get_parent_block(): 
 	assert(snake != null, "Snake shall be set")
@@ -127,6 +128,7 @@ func update_text_label() -> void:
 	$TextLabel.text = gamestate.get_block_label_text(value)
 
 func _draw():
+	if not OS.is_debug_build(): return
 	for a in stored_positions:
 		draw_circle(to_local(a), 4, Color.YELLOW_GREEN)
 

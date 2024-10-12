@@ -41,6 +41,7 @@ position = Vector2(646, 644)
 value = 2
 
 [node name="CanvasLayer" type="CanvasLayer" parent="."]
+visible = false
 
 [node name="CreateNpcBtn" type="Button" parent="CanvasLayer"]
 offset_left = 509.0
@@ -118,6 +119,7 @@ position = Vector2(2200, -2283)
 position = Vector2(1373, -1509)
 
 [node name="DebugCamera" type="Camera2D" parent="."]
+visible = false
 zoom = Vector2(0.345, 0.345)
 
 [node name="NpcSpawnTimer" type="Timer" parent="."]

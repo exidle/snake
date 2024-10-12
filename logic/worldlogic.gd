@@ -4,8 +4,17 @@ extends Node2D
 @onready var camera_update_timeout: float = 0.
 
 func _ready():
+	pre_start_configure_debug()
 	if not is_multiplayer_authority(): $CanvasLayer/CreateNpcBtn.disabled = true
 	updateCreateNpcBtnLabel()
+
+func pre_start_configure_debug():
+	if OS.is_debug_build():
+		$CanvasLayer.visible = true
+		$DebugCamera.visible = true
+	else:
+		$CanvasLayer.visible = false
+		$DebugCamera.visible = false
 
 func _on_create_npc_btn_pressed():
 	#$CanvasLayer/CreateNpcBtn.set_focus_mode(Control.FOCUS_NONE)
@@ -76,7 +85,6 @@ func _on_set_mc_camera_btn_pressed() -> void:
 func _on_npc_spawn_timer_timeout() -> void:
 	gamestate.ms_log("On spawn TO")
 	gamestate.spawn_npc()
-
 
 func _on_check_npc_amount_btn_pressed() -> void:
 	gamestate.ms_log("Theree are currently:  %d" % $NpcBlocks.get_child_count())
