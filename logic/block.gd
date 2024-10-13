@@ -1,3 +1,4 @@
+class_name Block
 extends CharacterBody2D
 
 ## The player's movement speed (in pixels per second).
@@ -8,7 +9,7 @@ const STORED_DISTANCE = 30.0
 const BETWEEN_BLOCKS_DISTANCE = 128 + 20
 
 @export var snake: Node2D = null
-@export var value: int = 1
+@export var value_index: int = 1
 @onready var inputs: Node = null
 
 @onready var stored_positions: Array = []
@@ -30,8 +31,9 @@ func block_init(block_parent: CharacterBody2D, block_value, tree_node) -> void:
 	self.reparent(tree_node)
 	self.global_position = block_parent.global_position
 	self.rotation = block_parent.rotation
+	self.scale = BlocksCommon.get_scale(BlocksCommon.get_value(value_index)) * Vector2.ONE
 	self.snake = block_parent.snake
-	self.value = block_value
+	self.value_index = block_value
 	$label.text = ""
 	self.update_text_label()
 	stored_positions.clear()
@@ -124,8 +126,8 @@ func bump_with_block(block_value: int) -> void:
 	if not $ImmuteTimer.is_stopped():
 		gamestate.ms_log("%s The block is immuted" % name)
 		return
-	gamestate.ms_log("%s Player %s (%d) enters into npc block value: %d" % [name, str(name), value, block_value])
-	assert(value >= block_value, "Cannot eat bigger block")
+	gamestate.ms_log("%s Player %s (%d) enters into npc block value: %d" % [name, str(name), value_index, block_value])
+	assert(value_index >= block_value, "Cannot eat bigger block")
 	snake.call_deferred("add_player_block", block_value)
 
 func collide_with_head():
@@ -137,15 +139,30 @@ func has_parent_block() -> bool:
 
 func update_text_label() -> void:
 	# Number value label
-	$TextLabel.text = gamestate.get_block_label_text(value)
+	$TextLabel.text = BlocksCommon.get_block_value_as_text(value_index)
 
 func _draw():
 	if not OS.is_debug_build(): return
 	for a in stored_positions:
 		draw_circle(to_local(a), 4, Color.YELLOW_GREEN)
 
-
-
-
 func _on_immute_timer_timeout():
 	snake.verify_doubling(self)
+
+func set_value_index(val_index: int):
+	value_index = val_index
+
+func get_value_index() -> int:
+	return value_index
+
+func is_equal(block: Block) -> bool:
+	return value_index == block.value_index
+
+func is_greater(block: Block) -> bool:
+	return self.value_index > block.value_index
+
+func do_double():
+	value_index += 1
+	self.scale = BlocksCommon.get_scale(BlocksCommon.get_value(value_index)) * Vector2.ONE
+	update_text_label()
+	

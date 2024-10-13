@@ -38,7 +38,6 @@ z_index = 9
 
 [node name="npc_block" parent="NpcBlocks" instance=ExtResource("1_nce1e")]
 position = Vector2(646, 644)
-value = 2
 
 [node name="CanvasLayer" type="CanvasLayer" parent="."]
 visible = false
