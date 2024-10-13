@@ -1,12 +1,10 @@
 [gd_scene load_steps=7 format=3 uid="uid://dtfcnot1wruor"]
 
 [ext_resource type="Script" path="res://logic/block.gd" id="1_gm7hs"]
-[ext_resource type="Texture2D" uid="uid://c1pn3f7det0ds" path="res://icon.svg" id="2_1qm0b"]
+[ext_resource type="Texture2D" uid="uid://ba0t0jhuyw6h3" path="res://gfx/geom_block/block_geom_inner.png" id="2_41a68"]
+[ext_resource type="Texture2D" uid="uid://by13nnlmht31c" path="res://gfx/geom_block/block_geom_frame.png" id="3_xk0al"]
 [ext_resource type="LabelSettings" uid="uid://c5mhjkriklcok" path="res://scenes/number_label_conf.tres" id="4_7rvyf"]
 [ext_resource type="FontFile" uid="uid://bnl1vkol8ivdn" path="res://stuff/montserrat.otf" id="4_8iarv"]
-
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_5or1k"]
-size = Vector2(128, 128)
 
 [sub_resource type="LabelSettings" id="LabelSettings_k63p8"]
 font_size = 24
@@ -18,22 +16,24 @@ collision_mask = 16
 motion_mode = 1
 script = ExtResource("1_gm7hs")
 
-[node name="sprite" type="Sprite2D" parent="."]
-z_index = -1
-texture = ExtResource("2_1qm0b")
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="."]
+polygon = PackedVector2Array(50, -60, 57, -57, 60, -52, 60, 51, 56, 58, 47, 60, -54, 60, -60, 54, -60, -50, -58, -56, -53, -60)
 
-[node name="collisionShape2D" type="CollisionShape2D" parent="."]
-shape = SubResource("RectangleShape2D_5or1k")
-debug_color = Color(0.538773, 0.567995, 0, 0.42)
+[node name="block_sprite" type="Sprite2D" parent="."]
+z_index = -1
+texture = ExtResource("2_41a68")
+
+[node name="block_kant" type="Sprite2D" parent="."]
+texture = ExtResource("3_xk0al")
 
 [node name="label" type="Label" parent="."]
 offset_left = -63.0
-offset_top = -56.0
+offset_top = -49.0
 offset_right = 64.0
-offset_bottom = -29.0
+offset_bottom = -18.0
 theme_override_fonts/font = ExtResource("4_8iarv")
 theme_override_font_sizes/font_size = 16
-text = "block"
+text = "You"
 label_settings = SubResource("LabelSettings_k63p8")
 horizontal_alignment = 1
 

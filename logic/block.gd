@@ -16,14 +16,23 @@ const BETWEEN_BLOCKS_DISTANCE = 128 + 20
 var update_position_time: float = 0.
 
 func _ready() -> void:
+	pre_start_configure_debug()
 	update_text_label()
 
+func pre_start_configure_debug():
+	if OS.is_debug_build():
+		$DebugLabel.visible = true
+	else:
+		$DebugLabel.visible = false
+
 func block_init(block_parent: CharacterBody2D, block_value, tree_node) -> void:
+	assert(block_parent != null)
 	self.reparent(tree_node)
 	self.global_position = block_parent.global_position
 	self.rotation = block_parent.rotation
 	self.snake = block_parent.snake
 	self.value = block_value
+	$label.text = ""
 	self.update_text_label()
 	stored_positions.clear()
 	$ImmuteTimer.start(0.5)
@@ -75,10 +84,12 @@ func get_parent_block():
 
 @rpc("call_local")
 func set_player_name(player_name: String) -> void:
-	$label.text = player_name
+	#$label.text = player_name
 	# Assign a random color to the player based on its name.
 	$label.modulate = gamestate.get_player_color(player_name)
-	$sprite.modulate = Color(0.5, 0.5, 0.5) + gamestate.get_player_color(player_name)
+	var player_color = gamestate.get_player_color(player_name)
+	$block_kant.modulate = Color(0.5, 0.5, 0.5) + player_color
+	$block_sprite.modulate = Color(0.2, 0.2, 0.2) + player_color
 
 func update_stored_positions():
 	if not stored_positions.is_empty():
@@ -125,6 +136,7 @@ func has_parent_block() -> bool:
 	return snake.has_parent_block(self)
 
 func update_text_label() -> void:
+	# Number value label
 	$TextLabel.text = gamestate.get_block_label_text(value)
 
 func _draw():
@@ -132,11 +144,7 @@ func _draw():
 	for a in stored_positions:
 		draw_circle(to_local(a), 4, Color.YELLOW_GREEN)
 
-## + Proper doubling
-## + Place in right position
-## + Eat part of snake
-## + Eat other snake head
-## + Stop block if parent is stopped
+
 
 
 func _on_immute_timer_timeout():
