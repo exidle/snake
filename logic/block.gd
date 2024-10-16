@@ -17,6 +17,7 @@ const BETWEEN_BLOCKS_DISTANCE = 128 + 20
 var update_position_time: float = 0.
 
 func _ready() -> void:
+	get_tree().physics_interpolation = true
 	pre_start_configure_debug()
 	update_text_label()
 
@@ -27,6 +28,7 @@ func pre_start_configure_debug():
 		$DebugLabel.visible = false
 
 func block_init(block_parent: CharacterBody2D, block_value, tree_node) -> void:
+	reset_physics_interpolation()
 	assert(block_parent != null)
 	self.reparent(tree_node)
 	self.global_position = block_parent.global_position
@@ -69,7 +71,9 @@ func _physics_process(delta):
 			velocity *= 0.
 		if get_total_distance() > BETWEEN_BLOCKS_DISTANCE + 20:
 			velocity *= 2.
+		## To avoid a following block stop because of collision
 		if get_total_distance() > BETWEEN_BLOCKS_DISTANCE + 40:
+			reset_physics_interpolation()
 			global_position = parent_block.global_position
 			parent_block.clear_stored_positions()
 		rotation = lerp_angle(rotation, -vd.angle_to(Vector2.UP), delta * 6.0)
