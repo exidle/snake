@@ -1,0 +1,36 @@
+[gd_scene load_steps=3 format=3 uid="uid://cv5farej4l40g"]
+
+[ext_resource type="Script" path="res://logic/timeout.gd" id="1_ehno2"]
+[ext_resource type="FontFile" uid="uid://bnl1vkol8ivdn" path="res://stuff/montserrat.otf" id="2_4fowx"]
+
+[node name="TimeoutScene" type="Node"]
+script = ExtResource("1_ehno2")
+
+[node name="Control" type="ColorRect" parent="."]
+offset_right = 117.0
+offset_bottom = 113.0
+color = Color(0.377919, 0.377919, 0.377919, 1)
+
+[node name="LabelWIthText" type="Label" parent="Control"]
+layout_mode = 0
+offset_right = 117.0
+offset_bottom = 36.0
+theme_override_fonts/font = ExtResource("2_4fowx")
+theme_override_font_sizes/font_size = 26
+horizontal_alignment = 1
+vertical_alignment = 1
+visible_characters = 0
+visible_ratio = 0.0
+
+[node name="LabelWithDesc" type="Label" parent="Control"]
+layout_mode = 0
+offset_left = 2.0
+offset_top = 35.0
+offset_right = 114.0
+offset_bottom = 110.0
+theme_override_fonts/font = ExtResource("2_4fowx")
+theme_override_font_sizes/font_size = 15
+text = "Use mouse for 
+moving the 
+snake's head"
+horizontal_alignment = 1
