@@ -3,6 +3,7 @@ extends CharacterBody2D
 
 ## The player's movement speed (in pixels per second).
 const MOTION_SPEED = 290.0
+const K_SPEEDUP_FRACTION = 0.3
 
 ## The distance between stored positions (pixels).
 const STORED_DISTANCE = 30.0
@@ -14,6 +15,7 @@ const BETWEEN_BLOCKS_DISTANCE = 128 + 20
 
 @onready var stored_positions: Array = []
 @onready var process_enabled = true
+
 var update_position_time: float = 0.
 
 func _ready() -> void:

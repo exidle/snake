@@ -39,17 +39,17 @@ z_index = 9
 [node name="npc_block" parent="NpcBlocks" instance=ExtResource("1_nce1e")]
 position = Vector2(646, 644)
 
-[node name="CanvasLayer" type="CanvasLayer" parent="."]
+[node name="DebugCanvasLayer" type="CanvasLayer" parent="."]
 visible = false
 
-[node name="CreateNpcBtn" type="Button" parent="CanvasLayer"]
+[node name="CreateNpcBtn" type="Button" parent="DebugCanvasLayer"]
 offset_left = 509.0
 offset_top = 41.0
 offset_right = 612.0
 offset_bottom = 72.0
 text = "CREATE NPC"
 
-[node name="HSlider" type="HSlider" parent="CanvasLayer"]
+[node name="HSlider" type="HSlider" parent="DebugCanvasLayer"]
 offset_left = 446.0
 offset_top = 18.0
 offset_right = 679.0
@@ -61,21 +61,21 @@ scrollable = false
 tick_count = 5
 ticks_on_borders = true
 
-[node name="SetCameraBtn" type="Button" parent="CanvasLayer"]
+[node name="SetCameraBtn" type="Button" parent="DebugCanvasLayer"]
 offset_left = 942.0
 offset_top = 18.0
 offset_right = 1111.0
 offset_bottom = 49.0
 text = "SET_DEBUG_CAMERA"
 
-[node name="SetMcCameraBtn" type="Button" parent="CanvasLayer"]
+[node name="SetMcCameraBtn" type="Button" parent="DebugCanvasLayer"]
 offset_left = 942.0
 offset_top = 72.0
 offset_right = 1111.0
 offset_bottom = 103.0
 text = "SET_MC_CAMERA"
 
-[node name="CheckNpcAmountBtn" type="Button" parent="CanvasLayer"]
+[node name="CheckNpcAmountBtn" type="Button" parent="DebugCanvasLayer"]
 offset_left = 942.0
 offset_top = 126.0
 offset_right = 1111.0
@@ -123,10 +123,26 @@ zoom = Vector2(0.345, 0.345)
 wait_time = 20.0
 one_shot = true
 
+[node name="CanvasLayer" type="CanvasLayer" parent="."]
+visible = false
+
+[node name="ReqRespawnButton" type="Button" parent="CanvasLayer"]
+anchors_preset = -1
+anchor_right = 1.0
+anchor_bottom = 0.994
+offset_left = 538.0
+offset_top = 360.0
+offset_right = -502.0
+offset_bottom = -253.112
+size_flags_horizontal = 4
+size_flags_vertical = 4
+text = "I WANT PLAY!"
+
 [connection signal="despawned" from="NpcBlocksSpawner" to="NpcBlocksSpawner" method="_on_despawned"]
-[connection signal="pressed" from="CanvasLayer/CreateNpcBtn" to="." method="_on_create_npc_btn_pressed"]
-[connection signal="value_changed" from="CanvasLayer/HSlider" to="." method="_on_h_slider_value_changed"]
-[connection signal="pressed" from="CanvasLayer/SetCameraBtn" to="." method="_on_set_camera_btn_pressed"]
-[connection signal="pressed" from="CanvasLayer/SetMcCameraBtn" to="." method="_on_set_mc_camera_btn_pressed"]
-[connection signal="pressed" from="CanvasLayer/CheckNpcAmountBtn" to="." method="_on_check_npc_amount_btn_pressed"]
+[connection signal="pressed" from="DebugCanvasLayer/CreateNpcBtn" to="." method="_on_create_npc_btn_pressed"]
+[connection signal="value_changed" from="DebugCanvasLayer/HSlider" to="." method="_on_h_slider_value_changed"]
+[connection signal="pressed" from="DebugCanvasLayer/SetCameraBtn" to="." method="_on_set_camera_btn_pressed"]
+[connection signal="pressed" from="DebugCanvasLayer/SetMcCameraBtn" to="." method="_on_set_mc_camera_btn_pressed"]
+[connection signal="pressed" from="DebugCanvasLayer/CheckNpcAmountBtn" to="." method="_on_check_npc_amount_btn_pressed"]
 [connection signal="timeout" from="NpcSpawnTimer" to="." method="_on_npc_spawn_timer_timeout"]
+[connection signal="pressed" from="CanvasLayer/ReqRespawnButton" to="." method="_on_req_respawn_button_pressed"]

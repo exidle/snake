@@ -139,6 +139,7 @@ func begin_game() -> void:
 	for p_id: int in spawn_points:
 		var spawn_pos: Vector2 = world.get_node("SpawnPoints/" + str(spawn_points[p_id])).position
 		var player := player_scene.instantiate()
+		player.sig_game_over.connect(end_game_for_player)
 		player.synced_position = spawn_pos
 		player.name = str(p_id)
 		world.get_node("Players").add_child(player)
@@ -146,6 +147,34 @@ func begin_game() -> void:
 		player.set_player_name.rpc(player_name if p_id == multiplayer.get_unique_id() else players[p_id])
 
 	spawn_npc()
+
+func end_game_for_player(p_id):
+	ms_log("end_game_for_player id = %d" % p_id)
+	rpc_id(p_id, "activate_respawn")
+
+@rpc("any_peer", "call_local")
+func activate_respawn() -> void:
+	var world: Node2D = get_tree().get_root().get_node("World")
+	world.main_player_died()
+
+@rpc("any_peer", "call_local")
+func respawn(id: int) -> void:
+	if not is_multiplayer_authority():
+		return
+	ms_log("respawn id = %d" % id)
+
+	var world: Node2D = get_tree().get_root().get_node("World")
+	var player_scene: PackedScene = load("res://scenes/snake.tscn")
+
+	# spwan player at first spawn point
+	var spawn_pos: Vector2 = world.get_node("SpawnPoints/0").position
+	var player := player_scene.instantiate()
+	player.sig_game_over.connect(end_game_for_player)
+	player.synced_position = spawn_pos
+	player.name = str(id)
+	world.get_node("Players").add_child(player)
+	player.set_player_name.rpc(player_name if id == multiplayer.get_unique_id() else players[id])
+
 
 func is_main_player(p_id):
 	return p_id == str(multiplayer.get_unique_id())

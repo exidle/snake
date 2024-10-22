@@ -15,6 +15,8 @@ extends Node2D
 const ChainDoubleStartTimeout = 0.5
 @onready var motion_multiplier = 1.0
 
+signal sig_game_over(id)
+
 func _ready():
 	if str(name).is_valid_int():
 		$"Inputs/InputsSync".set_multiplayer_authority(str(name).to_int())
@@ -149,6 +151,7 @@ func remove_block(block) -> void:
 	blocks.erase(block)
 
 func game_over() -> void:
+	sig_game_over.emit(str(name).to_int())
 	queue_free()
 
 func is_movement_enabled() -> bool:
