@@ -40,7 +40,6 @@ z_index = 9
 position = Vector2(646, 644)
 
 [node name="DebugCanvasLayer" type="CanvasLayer" parent="."]
-visible = false
 
 [node name="CreateNpcBtn" type="Button" parent="DebugCanvasLayer"]
 offset_left = 509.0
@@ -86,6 +85,7 @@ text = "CHECK_NPC_COUNT"
 scale = Vector2(2, 2)
 
 [node name="Camera2D" type="Camera2D" parent="."]
+limit_smoothed = true
 position_smoothing_enabled = true
 editor_draw_drag_margin = true
 

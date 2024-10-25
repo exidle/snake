@@ -6,6 +6,8 @@ extends Node2D
 @onready var debug_canvas_layer = $DebugCanvasLayer
 @onready var respawn_ui = $CanvasLayer
 
+var camera_player: Node2D = null
+
 func _ready():
 	pre_start_configure_debug()
 	if not is_multiplayer_authority(): debug_canvas_layer.get_node("CreateNpcBtn").disabled = true
@@ -41,17 +43,10 @@ func updateCreateNpcBtnLabel():
 	debug_canvas_layer.get_node("CreateNpcBtn").text = "CreateNPC[" + str(npc_value) + "]"
 
 func _process(delta: float) -> void:
-	if camera_update_timeout > 0.1:
-		camera_update_timeout = 0.
-		for player in $Players.get_children():
-			#print("check ", player.name)
-			if gamestate.is_main_player(player.name):
-				var p = player.get_head_position()
-				if p: $Camera2D.position = p
-				break
-	camera_update_timeout += delta
-	
-	const CAMERA_SPEED = 400
+	if camera_player != null:
+		$Camera2D.global_position = camera_player.snake_head.global_position
+
+	const CAMERA_SPEED = 800
 	if Input.is_action_pressed("CameraDown"):
 		$DebugCamera.position.y += delta * CAMERA_SPEED
 	if Input.is_action_pressed("CameraUp"):
@@ -75,15 +70,34 @@ func _process(delta: float) -> void:
 	if is_multiplayer_authority() and $NpcBlocks.get_child_count() < 15 and $NpcSpawnTimer.is_stopped():
 		$NpcSpawnTimer.start()
 
+@rpc("authority", "call_local", "reliable")
+func set_camera_player(player_name: String) -> void:
+	gamestate.ms_log("Set camera player")
+	for player in $Players.get_children():
+		if player.name == player_name:
+			camera_player = player
+			break
+	gamestate.ms_log("Camera player is: " + player_name)
+
+func camera_player_died() -> void:
+	gamestate.ms_log("Camera player died")
+	camera_player = null
+
 func _on_set_camera_btn_pressed() -> void:
-	$Camera2D.enabled = false
-	$DebugCamera.enabled = true
+	var debug_camera = $DebugCamera
+	var main_camera = $Camera2D
+	debug_camera.enabled = true
+	main_camera.enabled = false
+	debug_camera.make_current()
+	
 
 func _on_set_mc_camera_btn_pressed() -> void:
-	$DebugCamera.enabled = false
-	$Camera2D.enabled = true
-	$DebugCamera.position = Vector2.ZERO
-	$DebugCamera.zoom = Vector2(4,4)
+	var debug_camera = $DebugCamera
+	var main_camera = $Camera2D
+	debug_camera.enabled = false
+	main_camera.enabled = true
+	debug_camera.position = Vector2.ZERO
+	main_camera.make_current()
 
 func _on_npc_spawn_timer_timeout() -> void:
 	gamestate.ms_log("On spawn TO")
@@ -94,6 +108,7 @@ func _on_check_npc_amount_btn_pressed() -> void:
 
 func main_player_died() -> void:
 	gamestate.ms_log("Main player died")
+	camera_player = null
 	respawn_ui.show()
 
 func _on_req_respawn_button_pressed() -> void:

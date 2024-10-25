@@ -17,6 +17,8 @@ const ChainDoubleStartTimeout = 0.5
 
 signal sig_game_over(id)
 
+var return_camera_cb = null
+
 func _ready():
 	if str(name).is_valid_int():
 		$"Inputs/InputsSync".set_multiplayer_authority(str(name).to_int())
@@ -152,6 +154,7 @@ func remove_block(block) -> void:
 
 func game_over() -> void:
 	sig_game_over.emit(str(name).to_int())
+	dettach_camera()
 	queue_free()
 
 func is_movement_enabled() -> bool:
@@ -162,3 +165,15 @@ func get_head_position():
 		return snake_head.global_position
 	else:
 		return null
+
+func dettach_camera() -> void:
+	if null == return_camera_cb: return
+	for child in snake_head.get_children():
+		if child is Camera2D:
+			return_camera_cb.call(child)
+
+func attach_main_camera(camera: Camera2D, callback: Callable) -> void:
+	return_camera_cb = callback
+	camera.reparent(snake_head)
+	camera.make_current()
+

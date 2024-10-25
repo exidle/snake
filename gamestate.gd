@@ -123,7 +123,6 @@ func begin_game() -> void:
 	load_world.rpc()
 
 	var world: Node2D = get_tree().get_root().get_node("World")
-	var player_scene: PackedScene = load("res://scenes/snake.tscn")
 
 	# Create a dictionary with peer ID. and respective spawn points.
 	# TODO: This could be improved by randomizing spawn points for players.
@@ -138,15 +137,20 @@ func begin_game() -> void:
 
 	for p_id: int in spawn_points:
 		var spawn_pos: Vector2 = world.get_node("SpawnPoints/" + str(spawn_points[p_id])).position
-		var player := player_scene.instantiate()
-		player.sig_game_over.connect(end_game_for_player)
-		player.synced_position = spawn_pos
-		player.name = str(p_id)
-		world.get_node("Players").add_child(player)
-		# The RPC must be called after the player is added to the scene tree.
-		player.set_player_name.rpc(player_name if p_id == multiplayer.get_unique_id() else players[p_id])
-
+		spawn_player(p_id, spawn_pos)
 	spawn_npc()
+
+func spawn_player(p_id: int, spawn_pos: Vector2) -> void:
+	var world: Node2D = get_tree().get_root().get_node("World")
+	var player_scene: PackedScene = load("res://scenes/snake.tscn")
+	var player := player_scene.instantiate()
+	player.sig_game_over.connect(end_game_for_player)
+	player.synced_position = spawn_pos
+	player.name = str(p_id)
+	world.get_node("Players").add_child(player)
+	# The RPC must be called after the player is added to the scene tree.
+	player.set_player_name.rpc(player_name if p_id == multiplayer.get_unique_id() else players[p_id])
+	world.set_camera_player.rpc_id(p_id, player.name)
 
 func end_game_for_player(p_id):
 	ms_log("end_game_for_player id = %d" % p_id)
@@ -164,20 +168,13 @@ func respawn(id: int) -> void:
 	ms_log("respawn id = %d" % id)
 
 	var world: Node2D = get_tree().get_root().get_node("World")
-	var player_scene: PackedScene = load("res://scenes/snake.tscn")
 
 	# spwan player at first spawn point
 	var spawn_pos: Vector2 = world.get_node("SpawnPoints/0").position
-	var player := player_scene.instantiate()
-	player.sig_game_over.connect(end_game_for_player)
-	player.synced_position = spawn_pos
-	player.name = str(id)
-	world.get_node("Players").add_child(player)
-	player.set_player_name.rpc(player_name if id == multiplayer.get_unique_id() else players[id])
-
+	spawn_player(id, spawn_pos)
 
 func is_main_player(p_id):
-	return p_id == str(multiplayer.get_unique_id())
+	return p_id == multiplayer.get_unique_id()
 
 func end_game() -> void:
 	if has_node("/root/World"):
