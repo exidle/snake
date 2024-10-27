@@ -1,0 +1,24 @@
+[gd_scene load_steps=3 format=3 uid="uid://bxkb7gmghb717"]
+
+[ext_resource type="Script" path="res://logic/snake_item.gd" id="1_18ugk"]
+[ext_resource type="FontFile" uid="uid://bnl1vkol8ivdn" path="res://stuff/montserrat.otf" id="2_pcxec"]
+
+[node name="SnakeItem" type="HBoxContainer"]
+offset_right = 179.0
+offset_bottom = 23.0
+size_flags_horizontal = 8
+size_flags_stretch_ratio = 4.03
+alignment = 2
+script = ExtResource("1_18ugk")
+
+[node name="Name" type="Label" parent="."]
+custom_minimum_size = Vector2(100, 0)
+layout_mode = 2
+theme_override_fonts/font = ExtResource("2_pcxec")
+text = "Snake"
+
+[node name="Value" type="Label" parent="."]
+custom_minimum_size = Vector2(100, 0)
+layout_mode = 2
+theme_override_fonts/font = ExtResource("2_pcxec")
+text = "Value"

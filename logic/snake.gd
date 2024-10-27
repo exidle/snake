@@ -16,6 +16,7 @@ const ChainDoubleStartTimeout = 0.5
 @onready var motion_multiplier = 1.0
 
 signal sig_game_over(id)
+signal sig_score_updated(id, score)
 
 var return_camera_cb = null
 
@@ -49,6 +50,22 @@ func _physics_process(_delta):
 func set_player_name(value: String) -> void:
 	snake_head.set_player_name(value)
 
+func get_player_name() -> String:
+	var a_name = snake_head.get_block_name()
+	return a_name
+#return a_name if not gamestate.is_main_player(a_name) else "You" 
+
+func get_player_score() -> int:
+	var score = 0
+	for x in blocks:
+		score += BlocksCommon.get_value(x.value_index)
+	return score
+
+func emit_udpate_player_score() -> void:
+	gamestate.ms_log("emit_udpate_player_score")
+	sig_score_updated.emit(str(name).to_int(), get_player_score())
+
+
 func add_player_block(value: int) -> void:
 	var block = BlockScene.instantiate()
 	block.set_value_index(value)	# important here for figure out right parent
@@ -62,6 +79,7 @@ func insert_block(block) -> CharacterBody2D:
 	var parent_block = blocks[parent_pos]
 	parent_block.stored_positions.clear()
 	blocks.insert(parent_pos + 1, block)
+	emit_udpate_player_score()
 	return parent_block
 
 func get_parent_block(block) -> CharacterBody2D:
@@ -104,6 +122,7 @@ func perform_doubling(idx) -> void:
 	var initiator_block = blocks[idx]
 	initiator_block.queue_free()
 	blocks.remove_at(idx)
+	emit_udpate_player_score()
 	if blocks.size() == 1: snake_head.stored_positions.clear()
 	if check_doubling(idx - 1) and $ChainDoublingTimer.is_stopped():
 		$ChainDoublingTimer.start()
@@ -143,6 +162,7 @@ func aquire_block(block) -> void:
 	other_snake.remove_block(block)
 	var parent_block = insert_block(block)
 	block.call_deferred("block_init", parent_block, block.get_value_index(), $snake_blocks)
+
 
 func remove_block(block) -> void:
 	gamestate.ms_log(name + ": remove_block")

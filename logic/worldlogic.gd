@@ -5,6 +5,7 @@ extends Node2D
 
 @onready var debug_canvas_layer = $DebugCanvasLayer
 @onready var respawn_ui = $CanvasLayer
+@onready var score_table = $HUD/Players/ScoreTable
 
 var camera_player: Node2D = null
 
@@ -12,6 +13,7 @@ func _ready():
 	pre_start_configure_debug()
 	if not is_multiplayer_authority(): debug_canvas_layer.get_node("CreateNpcBtn").disabled = true
 	updateCreateNpcBtnLabel()
+	update_best_3()
 
 func pre_start_configure_debug():
 	if OS.is_debug_build():
@@ -115,3 +117,19 @@ func _on_req_respawn_button_pressed() -> void:
 	gamestate.respawn.rpc(multiplayer.get_unique_id())
 	respawn_ui.hide()
 
+@rpc("authority", "call_local")
+func update_best_3():
+	gamestate.ms_log("update_best_3")
+	var sort_snake = func(a, b): 
+		return a.get_player_score() > b.get_player_score()
+	var v = []
+	for x in $Players.get_children():
+		v.append(x)
+	v.sort_custom(sort_snake)
+	var elems = min(3, v.size())
+	var max_elems = v.slice(0, elems)
+	var result = []
+	for x in max_elems:
+		result.append(NameValue.new(x.get_player_name(), x.get_player_score()))
+
+	score_table.update_best_players(result)

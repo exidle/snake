@@ -92,12 +92,15 @@ func get_parent_block():
 
 @rpc("call_local")
 func set_player_name(player_name: String) -> void:
-	#$label.text = player_name
+	$label.text = player_name
 	# Assign a random color to the player based on its name.
 	$label.modulate = gamestate.get_player_color(player_name)
 	var player_color = gamestate.get_player_color(player_name)
 	$block_kant.modulate = Color(0.5, 0.5, 0.5) + player_color
 	$block_sprite.modulate = Color(0.2, 0.2, 0.2) + player_color
+
+func get_block_name() -> String:
+	return $label.text
 
 func update_stored_positions():
 	if not stored_positions.is_empty():

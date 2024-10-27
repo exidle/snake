@@ -117,7 +117,6 @@ func spawn_npc() -> void:
 			npc_spawner.spawn([spawn_pos, value])
 
 
-
 func begin_game() -> void:
 	assert(multiplayer.is_server())
 	load_world.rpc()
@@ -139,22 +138,32 @@ func begin_game() -> void:
 		var spawn_pos: Vector2 = world.get_node("SpawnPoints/" + str(spawn_points[p_id])).position
 		spawn_player(p_id, spawn_pos)
 	spawn_npc()
+	world.update_best_3.rpc_id(1)
 
 func spawn_player(p_id: int, spawn_pos: Vector2) -> void:
 	var world: Node2D = get_tree().get_root().get_node("World")
 	var player_scene: PackedScene = load("res://scenes/snake.tscn")
 	var player := player_scene.instantiate()
 	player.sig_game_over.connect(end_game_for_player)
+	player.sig_score_updated.connect(update_best_score)
 	player.synced_position = spawn_pos
 	player.name = str(p_id)
 	world.get_node("Players").add_child(player)
 	# The RPC must be called after the player is added to the scene tree.
 	player.set_player_name.rpc(player_name if p_id == multiplayer.get_unique_id() else players[p_id])
 	world.set_camera_player.rpc_id(p_id, player.name)
+	world.update_best_3.rpc_id(p_id)
 
 func end_game_for_player(p_id):
 	ms_log("end_game_for_player id = %d" % p_id)
 	rpc_id(p_id, "activate_respawn")
+
+func update_best_score(_p_id, _score) -> void:
+	ms_log("update_best_score score = %d" % _score)
+	var world: Node2D = get_tree().get_root().get_node("World")
+	world.update_best_3.rpc_id(1)
+	for p in players:
+		world.update_best_3.rpc_id(p)
 
 @rpc("any_peer", "call_local")
 func activate_respawn() -> void:
