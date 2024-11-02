@@ -9,6 +9,7 @@ func _ready():
 ## are forming snake
 func _on_body_entered(body):
 	if body.has_method("collide_with_head") and body.snake != snake and body.is_processing_enabled():
+		log.ms_log(Log.collision, "collide_with_head")
 		#body.collide_with_head(snake.get)
 		snake.collide_with_other_snake(body)
 

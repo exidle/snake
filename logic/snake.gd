@@ -20,6 +20,8 @@ signal sig_score_updated(id, score)
 
 var return_camera_cb = null
 
+const collision: bool = true
+
 func _ready():
 	if str(name).is_valid_int():
 		$"Inputs/InputsSync".set_multiplayer_authority(str(name).to_int())
@@ -62,9 +64,13 @@ func get_player_score() -> int:
 	return score
 
 func emit_udpate_player_score() -> void:
-	gamestate.ms_log("emit_udpate_player_score")
+	log.ms_log(Log.best_score, "emit_udpate_player_score")
 	sig_score_updated.emit(str(name).to_int(), get_player_score())
 
+@rpc("call_local")
+func add_player_block_rpc(value: int) ->void:
+	log.ms_log(Log.snake_structure, "add_player_block_rpc value = %d" % value)
+	call_deferred("add_player_block", value)
 
 func add_player_block(value: int) -> void:
 	var block = BlockScene.instantiate()
@@ -75,7 +81,7 @@ func add_player_block(value: int) -> void:
 
 func insert_block(block) -> CharacterBody2D:
 	var parent_pos = find_parent_block(block)
-	gamestate.ms_log("insert_block parent idx = %d" % parent_pos)
+	log.ms_log(Log.snake_structure, "insert_block parent idx = %d" % parent_pos)
 	var parent_block = blocks[parent_pos]
 	parent_block.stored_positions.clear()
 	blocks.insert(parent_pos + 1, block)
@@ -97,7 +103,6 @@ func has_parent_block(block) -> bool:
 func find_parent_block(block: Block) -> int:
 	assert(not block.is_greater(snake_head), "Block can't be bigger than head")
 	for idx in range(blocks.size() - 1, 0, -1):
-		print("idx = ", idx)
 		var b = blocks[idx]
 		if b.is_equal(block) or b.is_greater(block): return idx
 	return 0
@@ -106,14 +111,12 @@ func verify_doubling(block) -> void:
 	var idx = blocks.find(block)
 	assert(idx != -1, "Block is not present in blocks!")
 	if check_doubling(idx):
-		print("Doubling is initiated")
+		log.ms_log(Log.doubling,"Doubling is initiated")
 		$ChainDoublingTimer.wait_time = ChainDoubleStartTimeout
 		perform_doubling(idx)
-	#else:
-		#print("No doubling")
 
 func perform_doubling(idx) -> void:
-	gamestate.ms_log("Perform doubling, idx = %d" % idx)
+	log.ms_log(Log.doubling, "Perform doubling, idx = %d" % idx)
 	assert(idx > 0, "Cant initiate doubing from head!")
 	var block = blocks[idx - 1]
 	block.do_double()
@@ -145,19 +148,21 @@ func _on_chain_doubling_timer_timeout():
 ## 3. game over if other's body is greater
 func collide_with_other_snake(body) -> void:
 	if snake_head.is_equal(body):
-		gamestate.ms_log("collide: do nothing")
+		log.ms_log(Log.collision,"collide_with_other_snake: do nothing")
 	elif snake_head.is_greater(body):
-		gamestate.ms_log("collide: aquire other")
 		if body != body.snake.snake_head:
+			log.ms_log(Log.collision,"collide_with_other_snake: aquire other")
 			aquire_block(body)
 		else:
-			call_deferred("add_player_block", body.get_value_index())
+			log.ms_log(Log.collision,"collide_with_other_snake: add_player_block")
+			#call_deferred("add_player_block", body.get_value_index())
+			add_player_block_rpc.rpc(body.get_value_index())
 	else:
-		gamestate.ms_log("collide: game over")
+		log.ms_log(Log.collision,"collide_with_other_snake: game over")
 		game_over()
 
 func aquire_block(block) -> void:
-	gamestate.ms_log(name + ": aquire_block")
+	log.ms_log(Log.snake_structure, name + ": aquire_block")
 	var other_snake = block.snake
 	other_snake.remove_block(block)
 	var parent_block = insert_block(block)
@@ -165,7 +170,7 @@ func aquire_block(block) -> void:
 
 
 func remove_block(block) -> void:
-	gamestate.ms_log(name + ": remove_block")
+	log.ms_log(Log.snake_structure, name + ": remove_block")
 	block.set_processing(false)
 	#if block != snake_head:
 		#var parent = get_parent_block(block)

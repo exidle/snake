@@ -22,9 +22,9 @@ func _on_collision_area_body_entered(body):
 	if body.has_method("bump_with_block"):
 		if body.get_value_index() < value_index: return
 		call_deferred("set_collision_layer", 0)
-		gamestate.ms_log("%s NpcBlock collision detected" % name)
+		log.ms_log(Log.collision, "%s NpcBlock collision detected" % name)
 		is_active = false
 		if is_multiplayer_authority():
-			gamestate.ms_log("NpcBlock is calling bump_with_block")
+			log.ms_log(Log.collision, "NpcBlock is calling bump_with_block")
 			body.bump_with_block.rpc(value_index)
 		$AnimationPlayer.play("Dissolve")

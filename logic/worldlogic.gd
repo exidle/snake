@@ -27,12 +27,12 @@ func _on_create_npc_btn_pressed():
 	#debug_canvas_layer.get_node("CreateNpcBtn.set_focus_mode(Control.FOCUS_NONE)
 	#var npc = preload("res://scenes/NpcBlock.tscn").instantiate()
 	#npc.position = Vector2(500, 500)
-	gamestate.ms_log("btn pressed to create npc")
+	log.ms_log(Log.debug_elements, "btn pressed to create npc")
 	#$NpcBlocks.add_child(npc)
 	create_npc(npc_value)
 
 func create_npc(value: int) -> void:
-	gamestate.ms_log("Created npc")
+	log.ms_log(Log.debug_elements, "Created npc")
 	debug_canvas_layer.get_node("CreateNpcBtn").set_focus_mode(Control.FOCUS_NONE)
 	var npc_position = Vector2(500 + randi_range(-100, 100), 500 + randi_range(-100, 100))
 	$NpcBlocksSpawner.spawn([npc_position, value])
@@ -74,15 +74,15 @@ func _process(delta: float) -> void:
 
 @rpc("authority", "call_local", "reliable")
 func set_camera_player(player_name: String) -> void:
-	gamestate.ms_log("Set camera player")
+	log.ms_log(Log.camera, "Set camera player")
 	for player in $Players.get_children():
 		if player.name == player_name:
 			camera_player = player
 			break
-	gamestate.ms_log("Camera player is: " + player_name)
+	log.ms_log(Log.camera, "Camera player is: " + player_name)
 
 func camera_player_died() -> void:
-	gamestate.ms_log("Camera player died")
+	log.ms_log(Log.camera, "Camera player died")
 	camera_player = null
 
 func _on_set_camera_btn_pressed() -> void:
@@ -102,14 +102,14 @@ func _on_set_mc_camera_btn_pressed() -> void:
 	main_camera.make_current()
 
 func _on_npc_spawn_timer_timeout() -> void:
-	gamestate.ms_log("On spawn TO")
+	log.ms_log(Log.spawn_npc, "On spawn TO")
 	gamestate.spawn_npc()
 
 func _on_check_npc_amount_btn_pressed() -> void:
-	gamestate.ms_log("Theree are currently:  %d" % $NpcBlocks.get_child_count())
+	log.ms_log(Log.debug_elements, "Theree are currently:  %d" % $NpcBlocks.get_child_count())
 
 func main_player_died() -> void:
-	gamestate.ms_log("Main player died")
+	log.ms_log(Log.respawn, "Main player died")
 	camera_player = null
 	respawn_ui.show()
 
@@ -119,7 +119,7 @@ func _on_req_respawn_button_pressed() -> void:
 
 @rpc("authority", "call_local")
 func update_best_3():
-	gamestate.ms_log("update_best_3")
+	log.ms_log(Log.best_score, "update_best_3")
 	var sort_snake = func(a, b): 
 		return a.get_player_score() > b.get_player_score()
 	var v = []

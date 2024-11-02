@@ -45,5 +45,5 @@ func _process(delta: float) -> void:
 
 func change_text_label():
 	index_text_label = clamp(index_text_label + 1, 0, 2)
-	print("Scroll to line %d" % index_text_label)
+	log.ms_log(Log.default, "Scroll to line %d" % index_text_label)
 	$Control/LabelWIthText.text = labels[index_text_label]

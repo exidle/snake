@@ -133,14 +133,14 @@ func get_total_distance():
 @rpc("authority", "call_local", "reliable")
 func bump_with_block(block_value: int) -> void:
 	if not $ImmuteTimer.is_stopped():
-		gamestate.ms_log("%s The block is immuted" % name)
+		log.ms_log(Log.collision, "%s The block is immuted" % name)
 		return
-	gamestate.ms_log("%s Player %s (%d) enters into npc block value: %d" % [name, str(name), value_index, block_value])
+	log.ms_log(Log.collision, "%s Player %s (%d) enters into npc block value: %d" % [name, str(name), value_index, block_value])
 	assert(value_index >= block_value, "Cannot eat bigger block")
 	snake.call_deferred("add_player_block", block_value)
 
 func collide_with_head():
-	gamestate.ms_log("%s The collision with other head for a block" % name)
+	log.ms_log(Log.collision, "%s The collision with other head for a block" % name)
 	#if not has_parent(): snake.game_over()
 
 func has_parent_block() -> bool:

@@ -24,6 +24,7 @@ signal connection_succeeded()
 signal game_ended()
 signal game_error(what: int)
 
+
 # Callback from SceneTree.
 func _player_connected(id: int) -> void:
 	# Registration of a client beings here, tell the connected player that we are here.
@@ -129,10 +130,12 @@ func begin_game() -> void:
 	spawn_points[1] = 0  # Server in spawn point 0.
 	var spawn_point_idx := 1
 	for p: int in players:
-		print("p is ", p)
 		spawn_points[p] = spawn_point_idx
 		spawn_point_idx += 1
-	print("Players are: ", players)
+	var players_str = ""
+	for a in players:
+		players_str += str(a) + ":" + str(players[a]) + " "
+	log.ms_log(Log.default, "Players are: %s" % players_str)
 
 	for p_id: int in spawn_points:
 		var spawn_pos: Vector2 = world.get_node("SpawnPoints/" + str(spawn_points[p_id])).position
@@ -155,11 +158,11 @@ func spawn_player(p_id: int, spawn_pos: Vector2) -> void:
 	world.update_best_3.rpc_id(p_id)
 
 func end_game_for_player(p_id):
-	ms_log("end_game_for_player id = %d" % p_id)
+	log.ms_log(Log.respawn, "end_game_for_player id = %d" % p_id)
 	rpc_id(p_id, "activate_respawn")
 
 func update_best_score(_p_id, _score) -> void:
-	ms_log("update_best_score score = %d" % _score)
+	log.ms_log(Log.best_score, "update_best_score score = %d" % _score)
 	var world: Node2D = get_tree().get_root().get_node("World")
 	world.update_best_3.rpc_id(1)
 	for p in players:
@@ -174,7 +177,7 @@ func activate_respawn() -> void:
 func respawn(id: int) -> void:
 	if not is_multiplayer_authority():
 		return
-	ms_log("respawn id = %d" % id)
+	log.ms_log(Log.respawn, "respawn id = %d" % id)
 
 	var world: Node2D = get_tree().get_root().get_node("World")
 
@@ -206,9 +209,3 @@ func _ready() -> void:
 func get_player_color(p_name: String) -> Color:
 	return Color.from_hsv(wrapf(p_name.hash() * 0.001, 0.0, 1.0), 0.6, 1.0)
 
-
-## logging fun
-func ms_log(v: String):
-	var s = "[client]"
-	if is_multiplayer_authority(): s = "[server]"
-	print(s, str(Time.get_ticks_msec()), '# ', v)

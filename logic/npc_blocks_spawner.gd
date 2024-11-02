@@ -12,4 +12,4 @@ func _spawn_npc(data: Array) -> RigidBody2D:
 	return npc
 
 func _on_despawned(_node: Node) -> void:
-	gamestate.ms_log("despawned!")
+	log.ms_log(Log.respawn, "despawned!")

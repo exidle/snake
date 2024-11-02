@@ -16,5 +16,5 @@ func test_max_scale():
 func _scale_math():
 	for k in [1, 10, 20, 30]:
 		var value = BlocksCommon.get_value(k)
-		print("Value: %17d, Scale %2.5f" % [value, BlocksCommon.get_scale(value)])
+		#print("Value: %17d, Scale %2.5f" % [value, BlocksCommon.get_scale(value)])
 	return true
