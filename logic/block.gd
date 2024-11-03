@@ -32,6 +32,7 @@ func pre_start_configure_debug():
 func block_init(block_parent: CharacterBody2D, block_value, tree_node) -> void:
 	reset_physics_interpolation()
 	assert(block_parent != null)
+	self.add_to_group("snake_blocks")
 	self.reparent(tree_node)
 	self.global_position = block_parent.global_position
 	self.rotation = block_parent.rotation
@@ -86,10 +87,6 @@ func _physics_process(delta):
 	if OS.is_debug_build():
 		queue_redraw()
 
-func get_parent_block(): 
-	assert(snake != null, "Snake shall be set")
-	return snake.get_parent_block(self)
-
 @rpc("call_local")
 func set_player_name(player_name: String) -> void:
 	$label.text = player_name
@@ -130,14 +127,14 @@ func get_total_distance():
 	d += c.distance_to(parent_block.global_position)
 	return d
 
-@rpc("authority", "call_local", "reliable")
 func bump_with_block(block_value: int) -> void:
+	assert(self.is_multiplayer_authority(), "Only server can call this function")
 	if not $ImmuteTimer.is_stopped():
 		log.ms_log(Log.collision, "%s The block is immuted" % name)
 		return
-	log.ms_log(Log.collision, "%s Player %s (%d) enters into npc block value: %d" % [name, str(name), value_index, block_value])
+	log.ms_log(Log.collision, "%s Player %s (%d) enters into npc block (%d)" % [name, str(name), value_index, block_value])
 	assert(value_index >= block_value, "Cannot eat bigger block")
-	snake.call_deferred("add_player_block", block_value)
+	snake.add.rpc(block_value)
 
 func collide_with_head():
 	log.ms_log(Log.collision, "%s The collision with other head for a block" % name)

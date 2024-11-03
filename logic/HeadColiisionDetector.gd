@@ -2,17 +2,25 @@ extends Area2D
 
 @export var snake: Node2D
 
-func _ready():
-	pass # Replace with function body.
 ## The head collision detector is located on the head of snake
-## The callback is called when snake head is touching other objects that
-## are forming snake
 func _on_body_entered(body):
-	if body.has_method("collide_with_head") and body.snake != snake and body.is_processing_enabled():
-		log.ms_log(Log.collision, "collide_with_head")
-		#body.collide_with_head(snake.get)
-		snake.collide_with_other_snake(body)
+	if not is_multiplayer_authority(): return
+	if body.is_in_group("snake_blocks") and body.snake != snake:
+		if not body.is_processing_enabled(): return
+		var body_value = body.get_value_index()
+		log.ms_log(Log.collision, "%s Snake head collides with block (%d)" % [name, body_value])
+		var value_index = body.get_value_index()
 
+		var lambda = func(sn, vi, bo):
+			sn.add.rpc(vi)
+			bo.snake.delete.rpc(vi)
+
+		if body.snake.snake_head == body:
+			if snake.snake_head.is_greater(body):
+				lambda.call(snake, value_index, body)
+		else:
+			if snake.snake_head.is_equal(body) or snake.snake_head.is_greater(body):
+				lambda.call(snake, value_index, body)
 
 func _on_body_exited(_body):
-	pass # Replace with function body.
+	pass

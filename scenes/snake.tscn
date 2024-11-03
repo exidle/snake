@@ -27,9 +27,9 @@ properties/1/replication_mode = 2
 [node name="snake" type="Node2D"]
 script = ExtResource("1_tadlx")
 
-[node name="snake_blocks" type="Node2D" parent="."]
+[node name="snake_blocks" type="Node2D" parent="." groups=["snake_blocks"]]
 
-[node name="head" parent="snake_blocks" node_paths=PackedStringArray("snake") instance=ExtResource("1_6gasg")]
+[node name="head" parent="snake_blocks" node_paths=PackedStringArray("snake") groups=["snake_blocks", "snake_head"] instance=ExtResource("1_6gasg")]
 collision_layer = 4
 collision_mask = 22
 snake = NodePath("../..")

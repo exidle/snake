@@ -67,17 +67,37 @@ func emit_udpate_player_score() -> void:
 	log.ms_log(Log.best_score, "emit_udpate_player_score")
 	sig_score_updated.emit(str(name).to_int(), get_player_score())
 
-@rpc("call_local")
-func add_player_block_rpc(value: int) ->void:
-	log.ms_log(Log.snake_structure, "add_player_block_rpc value = %d" % value)
-	call_deferred("add_player_block", value)
-
-func add_player_block(value: int) -> void:
+@rpc("call_local", "reliable")
+func add(value: int) -> void:
+	log.ms_log(Log.snake_structure, "add value = %d" % value)
 	var block = BlockScene.instantiate()
 	block.set_value_index(value)	# important here for figure out right parent
-	var parent_block = insert_block(block)
-	$snake_blocks.add_child(block)
-	block.block_init(parent_block, value, $snake_blocks)
+	var my_lambda = func (bl, va):
+		log.ms_log(Log.snake_structure, "deferred call add block with value = %d" % va)
+		var parent_block = insert_block(bl)
+		$snake_blocks.add_child(bl)
+		bl.block_init(parent_block, va, $snake_blocks)
+
+	my_lambda.call_deferred(block, value)
+
+@rpc("call_local", "reliable")
+func delete(value: int) -> void:
+	log.ms_log(Log.snake_structure, "delete value = %d" % value)
+	var block_id = -1
+	for idx in range(blocks.size()):
+		if blocks[idx].get_value_index() == value: 
+			block_id = idx
+			break
+	assert(block_id > -1, "Not available block!")
+	if blocks[block_id] == snake_head:
+		game_over()
+		return
+	var my_lambda = func(bl, bl_id):
+		log.ms_log(Log.snake_structure, "deferred call delete block id = %d" % bl_id)
+		var bl_ref = bl[bl_id]
+		bl.remove_at(bl_id)
+		$snake_blocks.remove_child(bl_ref)
+	my_lambda.call_deferred(blocks, block_id)
 
 func insert_block(block) -> CharacterBody2D:
 	var parent_pos = find_parent_block(block)
@@ -141,32 +161,8 @@ func _on_chain_doubling_timer_timeout():
 			perform_doubling(idx)
 			return
 
-## This snake is colliding with other snake's body
-## result: 
-## 1. do nothing if blocks are same
-## 2. aquire other's snake body if that body is less
-## 3. game over if other's body is greater
-func collide_with_other_snake(body) -> void:
-	if snake_head.is_equal(body):
-		log.ms_log(Log.collision,"collide_with_other_snake: do nothing")
-	elif snake_head.is_greater(body):
-		if body != body.snake.snake_head:
-			log.ms_log(Log.collision,"collide_with_other_snake: aquire other")
-			aquire_block(body)
-		else:
-			log.ms_log(Log.collision,"collide_with_other_snake: add_player_block")
-			#call_deferred("add_player_block", body.get_value_index())
-			add_player_block_rpc.rpc(body.get_value_index())
-	else:
-		log.ms_log(Log.collision,"collide_with_other_snake: game over")
-		game_over()
-
-func aquire_block(block) -> void:
-	log.ms_log(Log.snake_structure, name + ": aquire_block")
-	var other_snake = block.snake
-	other_snake.remove_block(block)
-	var parent_block = insert_block(block)
-	block.call_deferred("block_init", parent_block, block.get_value_index(), $snake_blocks)
+func collide_with_other_snake(_body) -> void:
+	pass
 
 
 func remove_block(block) -> void:

@@ -19,12 +19,12 @@ func get_value() -> int:
 ## Collision can happen with snake head only
 func _on_collision_area_body_entered(body):
 	if not is_active: return
-	if body.has_method("bump_with_block"):
+	if body.is_in_group("snake_head"): 
 		if body.get_value_index() < value_index: return
 		call_deferred("set_collision_layer", 0)
 		log.ms_log(Log.collision, "%s NpcBlock collision detected" % name)
 		is_active = false
 		if is_multiplayer_authority():
 			log.ms_log(Log.collision, "NpcBlock is calling bump_with_block")
-			body.bump_with_block.rpc(value_index)
+			body.bump_with_block(value_index)
 		$AnimationPlayer.play("Dissolve")
