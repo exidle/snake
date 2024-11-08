@@ -83,7 +83,6 @@ offset_bottom = 157.0
 text = "CHECK_NPC_COUNT"
 
 [node name="Level0" parent="." instance=ExtResource("4_fm8wl")]
-scale = Vector2(2, 2)
 
 [node name="Camera2D" type="Camera2D" parent="."]
 limit_smoothed = true
