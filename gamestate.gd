@@ -108,18 +108,17 @@ func join_game(ip: String, new_player_name: String) -> void:
 func get_player_list() -> Array:
 	return players.values()
 
-func spawn_npc() -> void:
+func spawn_npc(pos: Vector2, val_min: int, val_max: int) -> void:
+	log.ms_log(Log.default, "Spawning npc at %s (min: %d, max: %d)" % [str(pos), val_min, val_max])
 	var world: Node2D = get_tree().get_root().get_node("World")
 	var npc_spawner = world.get_node("NpcBlocksSpawner")
-	for p_id: int in range(0, 8):
-		var spawn_pos: Vector2 = world.get_node("NpcPositions/" + str(p_id)).position
-		var value = 1
-		for repeat in range(1, 6):	
-			npc_spawner.spawn([spawn_pos, value])
+	var value = randi_range(val_min, val_max)
+	npc_spawner.spawn([pos, value])
 
 
 func begin_game() -> void:
 	assert(multiplayer.is_server())
+	randomize()
 	load_world.rpc()
 
 	var world: Node2D = get_tree().get_root().get_node("World")
@@ -140,8 +139,15 @@ func begin_game() -> void:
 	for p_id: int in spawn_points:
 		var spawn_pos: Vector2 = world.get_node("SpawnPoints/" + str(spawn_points[p_id])).position
 		spawn_player(p_id, spawn_pos)
-	spawn_npc()
+	
+	initaial_npc_spawn()
 	world.update_best_3.rpc_id(1)
+
+func initaial_npc_spawn() -> void:
+	var world: Node2D = get_tree().get_root().get_node("World")
+	for i in range(randi_range(3, 7)):
+		var pos = world.get_node("NpcPositions/" + str(i)).position
+		world.get_node("NpcBlocksSpawner").spawn([pos, randi_range(1, 3)])
 
 func spawn_player(p_id: int, spawn_pos: Vector2) -> void:
 	var world: Node2D = get_tree().get_root().get_node("World")

@@ -1,0 +1,9 @@
+[gd_scene load_steps=3 format=3 uid="uid://cu83i4nqd1wyx"]
+
+[ext_resource type="Script" path="res://tests/structure/doubling.gd" id="1_7ri4t"]
+[ext_resource type="PackedScene" uid="uid://dqvb0rym2d207" path="res://scenes/snake.tscn" id="1_a1ui5"]
+
+[node name="Doubling" type="Node2D"]
+script = ExtResource("1_7ri4t")
+
+[node name="snake" parent="." instance=ExtResource("1_a1ui5")]

@@ -32,12 +32,13 @@ func _ready() -> void:
 const default = [true, "default"] 
 const respawn = [false, "respawn"] 
 const best_score = [false, "best_score"]
-const collision = [true, "collision"] 
+const collision = [false, "collision"] 
 const snake_structure = [true, "snake_structure"]
-const doubling = [false, "doubling"] 
+const doubling = [true, "doubling"] 
 const debug_elements = [false, "debug_elements"]
 const camera = [false, "camera"] 
 const spawn_npc = [false, "spawn_npc"] 
+const level_changer = [false, "level_changer"]
 
 var logs_folder: String = "user://logs/"
 var log_file: FileAccess = null
@@ -61,6 +62,10 @@ func get_date() -> String:
 	var date = Time.get_date_dict_from_system()
 	return "%04d-%02d-%02d" % [date.year, date.month, date.day]
 
+func get_time() -> String:
+	var time = Time.get_time_dict_from_system()
+	return "%02d:%02d:%02d" % [time.hour, time.minute, time.second]
+
 func get_file_name(log_suffix: String) -> String:
 	var filename = "user://logs/" + get_date() 
 	if log_suffix != "":
@@ -78,5 +83,5 @@ func create_log_file(log_suffix: String) -> bool:
 
 	if result:
 		log_file.seek_end()
-		log_file.store_line("------- Log created on " + get_date() + " -------")
+		log_file.store_line("------- Log created on " + get_date() + " at " + get_time() + " -------")
 	return result

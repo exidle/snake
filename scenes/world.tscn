@@ -82,7 +82,7 @@ offset_right = 1111.0
 offset_bottom = 157.0
 text = "CHECK_NPC_COUNT"
 
-[node name="Level0" parent="." instance=ExtResource("4_fm8wl")]
+[node name="LevelChanger" parent="." instance=ExtResource("4_fm8wl")]
 
 [node name="Camera2D" type="Camera2D" parent="."]
 limit_smoothed = true
@@ -92,28 +92,28 @@ editor_draw_drag_margin = true
 [node name="NpcPositions" type="Node2D" parent="."]
 
 [node name="0" type="Marker2D" parent="NpcPositions"]
-position = Vector2(-271, -2237)
+position = Vector2(-1268, -1271)
 
 [node name="1" type="Marker2D" parent="NpcPositions"]
-position = Vector2(-2288, -288)
+position = Vector2(-1448, -319)
 
 [node name="2" type="Marker2D" parent="NpcPositions"]
-position = Vector2(-2288, 441)
+position = Vector2(-1448, 410)
 
 [node name="3" type="Marker2D" parent="NpcPositions"]
-position = Vector2(-288, 2373)
+position = Vector2(-775, 936)
 
 [node name="4" type="Marker2D" parent="NpcPositions"]
-position = Vector2(2272, 339)
+position = Vector2(1373, 360)
 
 [node name="5" type="Marker2D" parent="NpcPositions"]
-position = Vector2(509, -2238)
+position = Vector2(-488, -1272)
 
 [node name="6" type="Marker2D" parent="NpcPositions"]
-position = Vector2(2200, -2283)
+position = Vector2(1203, -1372)
 
 [node name="7" type="Marker2D" parent="NpcPositions"]
-position = Vector2(1373, -1509)
+position = Vector2(800, -787)
 
 [node name="DebugCamera" type="Camera2D" parent="."]
 visible = false

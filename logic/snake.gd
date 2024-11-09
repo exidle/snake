@@ -71,6 +71,8 @@ func emit_udpate_player_score() -> void:
 func add(value: int) -> void:
 	log.ms_log(Log.snake_structure, "add value = %d" % value)
 	var block = BlockScene.instantiate()
+	block.set_processing(false)
+	block.visible = false
 	block.set_value_index(value)	# important here for figure out right parent
 	var my_lambda = func (bl, va):
 		log.ms_log(Log.snake_structure, "deferred call add block with value = %d" % va)
@@ -106,10 +108,21 @@ func insert_block(block) -> CharacterBody2D:
 	parent_block.stored_positions.clear()
 	blocks.insert(parent_pos + 1, block)
 	emit_udpate_player_score()
+	verify_chain_doubling()
 	return parent_block
+
+func verify_chain_doubling() -> void:
+	log.ms_log(Log.snake_structure, "verify_chain_doubling")
+	if not $ChainDoublingTimer.is_stopped(): return
+	log.ms_log(Log.snake_structure, "verify_chain_doubling is stopped")
+	var idx = check_doubling()
+	if idx != -1:
+		perform_doubling(idx)
 
 func get_parent_block(block) -> CharacterBody2D:
 	var idx = blocks.find(block)
+	if idx == -1:
+		return null
 	assert(idx >= 1, "Block is not valid!")
 	return blocks[idx - 1]
 
@@ -127,43 +140,48 @@ func find_parent_block(block: Block) -> int:
 		if b.is_equal(block) or b.is_greater(block): return idx
 	return 0
 
-func verify_doubling(block) -> void:
-	var idx = blocks.find(block)
-	assert(idx != -1, "Block is not present in blocks!")
-	if check_doubling(idx):
-		log.ms_log(Log.doubling,"Doubling is initiated")
-		$ChainDoublingTimer.wait_time = ChainDoubleStartTimeout
-		perform_doubling(idx)
-
 func perform_doubling(idx) -> void:
-	log.ms_log(Log.doubling, "Perform doubling, idx = %d" % idx)
 	assert(idx > 0, "Cant initiate doubing from head!")
+	var initiator_block = blocks[idx]
+	initiator_block.set_processing(false)
+
 	var block = blocks[idx - 1]
+	log.ms_log(Log.doubling, "Perform doubling from block %d value(%d)" % [idx - 1, block.get_value_index()])
 	block.do_double()
 
 	# Remove initiator block
-	var initiator_block = blocks[idx]
+	log.ms_log(Log.doubling, "Remove block %d value(%d)" % [idx, initiator_block.get_value_index()])
+
 	initiator_block.queue_free()
 	blocks.remove_at(idx)
+
 	emit_udpate_player_score()
+	#sort_blocks()
 	if blocks.size() == 1: snake_head.stored_positions.clear()
-	if check_doubling(idx - 1) and $ChainDoublingTimer.is_stopped():
+	if check_doubling() and $ChainDoublingTimer.is_stopped():
+		log.ms_log(Log.doubling, "Start chain doubling timer")
 		$ChainDoublingTimer.start()
 
-## Returns true a block at position index is equal to it's predecessor
-func check_doubling(idx: int) -> bool:
-	return idx > 0 and blocks[idx - 1].is_equal(blocks[idx])
+func sort_blocks() -> void:
+	log.ms_log(Log.snake_structure, "sort_blocks")
+	blocks.slice(1).sort_custom(func (a, b): return a.is_greater(b))
+
+func check_doubling() -> int:
+	for idx in range(blocks.size()):
+		log.ms_log(Log.snake_structure, "check_doubling idx = %d" % idx)
+		if idx > 0 and blocks[idx - 1].is_equal(blocks[idx]): 
+			return idx
+	return -1
 
 func _on_chain_doubling_timer_timeout():
 	$ChainDoublingTimer.wait_time /= 2.0
-	for idx in range(1, blocks.size()):
-		if check_doubling(idx): 
-			perform_doubling(idx)
-			return
+	var idx = check_doubling() 
+	if idx != -1:
+		log.ms_log(Log.snake_structure, "Chain doubling timer timeout idx = %d" % idx)
+		perform_doubling(idx)
 
 func collide_with_other_snake(_body) -> void:
 	pass
-
 
 func remove_block(block) -> void:
 	log.ms_log(Log.snake_structure, name + ": remove_block")

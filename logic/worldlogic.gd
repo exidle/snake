@@ -6,6 +6,8 @@ extends Node2D
 @onready var debug_canvas_layer = $DebugCanvasLayer
 @onready var respawn_ui = $CanvasLayer
 @onready var score_table = $HUD/Players/ScoreTable
+@onready var level_changer = $LevelChanger
+@onready var npc_blocks = $NpcBlocks
 
 var camera_player: Node2D = null
 
@@ -103,7 +105,11 @@ func _on_set_mc_camera_btn_pressed() -> void:
 
 func _on_npc_spawn_timer_timeout() -> void:
 	log.ms_log(Log.spawn_npc, "On spawn TO")
-	gamestate.spawn_npc()
+	if npc_blocks.get_child_count() > level_changer.get_max_npc_for_location():
+		log.ms_log(Log.spawn_npc, "Too many NPCs on location")
+		return
+	for pos in level_changer.get_empty_positions():
+		gamestate.spawn_npc(pos, 1, 3)
 
 func _on_check_npc_amount_btn_pressed() -> void:
 	log.ms_log(Log.debug_elements, "Theree are currently:  %d" % $NpcBlocks.get_child_count())

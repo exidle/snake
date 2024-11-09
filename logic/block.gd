@@ -41,6 +41,7 @@ func block_init(block_parent: CharacterBody2D, block_value, tree_node) -> void:
 	self.value_index = block_value
 	$label.text = ""
 	self.update_text_label()
+	self.visible = true
 	stored_positions.clear()
 	$ImmuteTimer.start(0.5)
 	process_enabled = true
@@ -64,6 +65,7 @@ func _physics_process(delta):
 		velocity = inputs.motion * MOTION_SPEED * snake.motion_multiplier
 	elif has_parent_block():
 		var parent_block = snake.get_parent_block(self)
+		if parent_block == null: return
 		update_position_time += delta
 		if update_position_time > STORED_DISTANCE / MOTION_SPEED:
 			update_position_time = 0.
@@ -153,7 +155,7 @@ func _draw():
 		draw_circle(to_local(a), 4, Color.YELLOW_GREEN)
 
 func _on_immute_timer_timeout():
-	snake.verify_doubling(self)
+	pass
 
 func set_value_index(val_index: int):
 	value_index = val_index
@@ -168,6 +170,7 @@ func is_greater(block: Block) -> bool:
 	return self.value_index > block.value_index
 
 func do_double():
+	log.ms_log(Log.snake_structure, "do_double from value %d" % value_index)
 	value_index += 1
 	self.scale = BlocksCommon.get_scale(BlocksCommon.get_value(value_index)) * Vector2.ONE
 	update_text_label()

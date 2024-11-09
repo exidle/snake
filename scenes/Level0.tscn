@@ -1,7 +1,8 @@
-[gd_scene load_steps=10 format=4 uid="uid://cixm0eqtl20j3"]
+[gd_scene load_steps=11 format=4 uid="uid://cixm0eqtl20j3"]
 
 [ext_resource type="TileSet" uid="uid://c7eo2h2yob6a3" path="res://stuff/work1_tileset.tres" id="1_4awh6"]
 [ext_resource type="Texture2D" uid="uid://bciqyqo3rimqw" path="res://gfx/work1.png" id="1_7rmbf"]
+[ext_resource type="Script" path="res://logic/level_changer.gd" id="1_id4cx"]
 
 [sub_resource type="TileMapPattern" id="TileMapPattern_qik6i"]
 tile_data = PackedInt32Array(0, 0, 0, 65536, 0, 1, 1, 65536, 0, 65537, 65536, 1)
@@ -90,7 +91,8 @@ pattern_2 = SubResource("TileMapPattern_cjo6u")
 pattern_3 = SubResource("TileMapPattern_bs60s")
 pattern_4 = SubResource("TileMapPattern_yc08c")
 
-[node name="Node" type="Node"]
+[node name="LevelChanger" type="Node"]
+script = ExtResource("1_id4cx")
 
 [node name="Level0" type="TileMapLayer" parent="."]
 z_index = 100
