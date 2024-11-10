@@ -80,7 +80,6 @@ func _ready() -> void:
 	snake.add(1)
 	print_snake(snake)
 	## 6 - 5 - 2
-	#print("alex, look")
 	await get_tree().create_timer(0.2952).timeout
 	snake.add(3)
 	await get_tree().create_timer(0.167).timeout

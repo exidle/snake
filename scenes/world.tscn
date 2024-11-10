@@ -82,6 +82,27 @@ offset_right = 1111.0
 offset_bottom = 157.0
 text = "CHECK_NPC_COUNT"
 
+[node name="VisualizeNpcLoc" type="Button" parent="DebugCanvasLayer"]
+offset_left = 942.0
+offset_top = 186.0
+offset_right = 1111.0
+offset_bottom = 217.0
+text = "TOGGLE NEW LOC"
+
+[node name="GenNPC" type="Button" parent="DebugCanvasLayer"]
+offset_left = 942.0
+offset_top = 244.0
+offset_right = 1111.0
+offset_bottom = 275.0
+text = "GENERATE NPC"
+
+[node name="NewLoc" type="Button" parent="DebugCanvasLayer"]
+offset_left = 942.0
+offset_top = 306.0
+offset_right = 1111.0
+offset_bottom = 337.0
+text = "GET NEXT NPC LOC"
+
 [node name="LevelChanger" parent="." instance=ExtResource("4_fm8wl")]
 
 [node name="Camera2D" type="Camera2D" parent="."]
@@ -149,5 +170,8 @@ anchors_preset = 0
 [connection signal="pressed" from="DebugCanvasLayer/SetCameraBtn" to="." method="_on_set_camera_btn_pressed"]
 [connection signal="pressed" from="DebugCanvasLayer/SetMcCameraBtn" to="." method="_on_set_mc_camera_btn_pressed"]
 [connection signal="pressed" from="DebugCanvasLayer/CheckNpcAmountBtn" to="." method="_on_check_npc_amount_btn_pressed"]
+[connection signal="pressed" from="DebugCanvasLayer/VisualizeNpcLoc" to="." method="_on_visualize_npc_loc_pressed"]
+[connection signal="pressed" from="DebugCanvasLayer/GenNPC" to="." method="_on_gen_npc_pressed"]
+[connection signal="pressed" from="DebugCanvasLayer/NewLoc" to="." method="_on_new_loc_pressed"]
 [connection signal="timeout" from="NpcSpawnTimer" to="." method="_on_npc_spawn_timer_timeout"]
 [connection signal="pressed" from="CanvasLayer/ReqRespawnButton" to="." method="_on_req_respawn_button_pressed"]

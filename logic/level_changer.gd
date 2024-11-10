@@ -3,7 +3,9 @@ extends Node
 @onready var current_level_layer = $Level0
 var empty_map_positions = []
 
-const DEFAULT_MAP_POSITIONS = 30
+const DEFAULT_MAP_POSITIONS = 7
+const offset_x = 64
+const offset_y = 64
 
 func _ready() -> void:
 	log.ms_log(Log.level_changer, "LevelChanger ready")
@@ -22,7 +24,7 @@ func get_empty_positions() -> Array:
 	return empty_map_positions
 
 func recalculate_empty_map_positions() -> void:
-	calc_empty_map_positions(empty_map_positions.size() if not empty_map_positions.empty() else DEFAULT_MAP_POSITIONS)
+	calc_empty_map_positions(empty_map_positions.size() if not empty_map_positions.is_empty() else DEFAULT_MAP_POSITIONS)
 
 func reset_empty_map_positions() -> void:
 	empty_map_positions.clear()
@@ -32,14 +34,19 @@ func calc_empty_map_positions(amount: int) -> void:
 	empty_map_positions.clear()
 
 	var used_loc = current_level_layer.get_used_cells()
+	
+	log.ms_log(Log.level_changer, "used_loc size = %d" % used_loc.size())
 	var min_location = used_loc[0]
 	var max_location = used_loc.back()
+	log.ms_log(Log.level_changer, "min_location = %s, max_location = %s" % [ min_location, max_location ])
 
 	while amount > 0:
 		var x = randi_range(min_location.x, max_location.x)
 		var y = randi_range(min_location.y, max_location.y)
-		if Vector2(x, y) not in used_loc:
+		var map_pos = Vector2i(x, y)
+		if map_pos not in used_loc:
 			amount -= 1
-			empty_map_positions.append(Vector2(x, y))
-			log.ms_log(Log.level_changer, "added %s" % Vector2(x, y))
+			var pos = 1.25 * current_level_layer.map_to_local(map_pos)
+			empty_map_positions.append(pos)
+			log.ms_log(Log.level_changer, "added %s : %s" % [map_pos, pos])
 

@@ -8,6 +8,7 @@ extends Node2D
 @onready var score_table = $HUD/Players/ScoreTable
 @onready var level_changer = $LevelChanger
 @onready var npc_blocks = $NpcBlocks
+@onready var draw_debug_npc_spawn_positions = false
 
 var camera_player: Node2D = null
 
@@ -136,6 +137,33 @@ func update_best_3():
 	var max_elems = v.slice(0, elems)
 	var result = []
 	for x in max_elems:
+		log.ms_log(Log.default, "Draw debug npc spawn positions: " + str(draw_debug_npc_spawn_positions))
 		result.append(NameValue.new(x.get_player_name(), x.get_player_score()))
 
 	score_table.update_best_players(result)
+
+func _on_visualize_npc_loc_pressed() -> void:
+	draw_debug_npc_spawn_positions = !draw_debug_npc_spawn_positions
+	log.ms_log(Log.default, "Draw debug npc spawn positions: " + str(draw_debug_npc_spawn_positions))
+	queue_redraw()
+
+func _draw() -> void:
+	draw_circle(Vector2.ZERO, 64, Color.RED)
+	if draw_debug_npc_spawn_positions:
+		for pos in level_changer.get_empty_positions():
+			draw_rect(Rect2(pos - Vector2(32, 32), Vector2(64, 64)), Color.WHITE)
+			draw_circle(pos, 10, Color.RED)
+
+func _on_gen_npc_pressed() -> void:
+	log.ms_log(Log.default, "Generate npc")
+	$DebugCanvasLayer/GenNPC.set_focus_mode(Control.FOCUS_NONE)
+
+	for pos in level_changer.get_empty_positions():
+		gamestate.spawn_npc(pos, 1, 3)
+
+func _on_new_loc_pressed() -> void:
+	log.ms_log(Log.default, "Get new npc locations")
+	$DebugCanvasLayer/NewLoc.set_focus_mode(Control.FOCUS_NONE)
+
+	level_changer.recalculate_empty_map_positions()
+

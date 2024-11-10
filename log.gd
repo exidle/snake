@@ -33,12 +33,12 @@ const default = [true, "default"]
 const respawn = [false, "respawn"] 
 const best_score = [false, "best_score"]
 const collision = [false, "collision"] 
-const snake_structure = [true, "snake_structure"]
-const doubling = [true, "doubling"] 
-const debug_elements = [false, "debug_elements"]
+const snake_structure = [false, "snake_structure"]
+const doubling = [false, "doubling"] 
+const debug_elements = [true, "debug_elements"]
 const camera = [false, "camera"] 
 const spawn_npc = [false, "spawn_npc"] 
-const level_changer = [false, "level_changer"]
+const level_changer = [true, "level_changer"]
 
 var logs_folder: String = "user://logs/"
 var log_file: FileAccess = null
