@@ -166,4 +166,3 @@ func _on_new_loc_pressed() -> void:
 	$DebugCanvasLayer/NewLoc.set_focus_mode(Control.FOCUS_NONE)
 
 	level_changer.recalculate_empty_map_positions()
-

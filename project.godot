@@ -20,6 +20,10 @@ config/icon="res://icon.svg"
 gamestate="*res://gamestate.gd"
 log="*res://log.gd"
 
+[display]
+
+window/dpi/allow_hidpi=false
+
 [input]
 
 rotate_cw={

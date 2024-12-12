@@ -49,4 +49,3 @@ func calc_empty_map_positions(amount: int) -> void:
 			var pos = 1.25 * current_level_layer.map_to_local(map_pos)
 			empty_map_positions.append(pos)
 			log.ms_log(Log.level_changer, "added %s : %s" % [map_pos, pos])
-
