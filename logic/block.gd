@@ -7,7 +7,8 @@ const K_SPEEDUP_FRACTION = 0.3
 
 ## The distance between stored positions (pixels).
 const STORED_DISTANCE = 30.0
-const BETWEEN_BLOCKS_DISTANCE = 128 + 20
+const BASIC_BLOCK_SIDE = 64
+const BETWEEN_BLOCKS_DISTANCE = 20
 
 @export var snake: Node2D = null
 @export var value_index: int = 1
@@ -52,6 +53,14 @@ func set_processing(enabled):
 func is_processing_enabled():
 	return process_enabled
 
+#  A = 64
+# (---2*A---)--B--(-----3*A------)
+# cd = A + 3A/2 + B
+
+# Function to get expected distance between parent block and self 
+func get_expected_distance(k):
+	return BASIC_BLOCK_SIDE * k + BETWEEN_BLOCKS_DISTANCE + BASIC_BLOCK_SIDE * self.scale.x
+
 func _physics_process(delta):
 	if !process_enabled: return
 	# Everybody runs physics. i.e. clients try to predict where they will be during the next frame.
@@ -72,12 +81,15 @@ func _physics_process(delta):
 			if snake.is_movement_enabled(): parent_block.update_stored_positions()
 		var vd = (parent_block.get_last_stored_position() - global_position).normalized()
 		velocity = vd * MOTION_SPEED * snake.motion_multiplier
-		if get_total_distance() < BETWEEN_BLOCKS_DISTANCE:
+		var total_distance = get_total_distance()
+		var expected_distance = get_expected_distance(parent_block.scale.x)
+		if total_distance < expected_distance:
 			velocity *= 0.
-		if get_total_distance() > BETWEEN_BLOCKS_DISTANCE + 20:
+		elif total_distance > expected_distance + BETWEEN_BLOCKS_DISTANCE:
 			velocity *= 2.
-		## To avoid a following block stop because of collision
-		if get_total_distance() > BETWEEN_BLOCKS_DISTANCE + 40:
+		
+		## To avoid a following block stop because of collision´´´
+		if total_distance > expected_distance + 2 * BETWEEN_BLOCKS_DISTANCE:
 			reset_physics_interpolation()
 			global_position = parent_block.global_position
 			parent_block.clear_stored_positions()

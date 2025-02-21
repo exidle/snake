@@ -4,6 +4,7 @@ extends Node2D
 @export var synced_position := Vector2(500, 500)
 # Heads rotation
 @export var synced_rotation := 0.0
+@export var signle_player := false
 
 @onready var snake_head = $snake_blocks/head
 @onready var inputs = $Inputs
@@ -14,6 +15,7 @@ extends Node2D
 
 const ChainDoubleStartTimeout = 0.5
 @onready var motion_multiplier = 1.0
+
 
 signal sig_game_over(id)
 signal sig_score_updated(id, score)
@@ -34,7 +36,8 @@ func _ready():
 	$ChainDoublingTimer.wait_time = ChainDoubleStartTimeout
 
 func _physics_process(_delta):
-	if multiplayer.multiplayer_peer == null or str(multiplayer.get_unique_id()) == str(name):
+	
+	if signle_player or multiplayer.multiplayer_peer == null or str(multiplayer.get_unique_id()) == str(name):
 		# The client which this player represent will update the controls state, and notify it to everyone.
 		inputs.update(snake_head.global_position, snake_head.rotation)
 	
@@ -215,4 +218,3 @@ func attach_main_camera(camera: Camera2D, callback: Callable) -> void:
 	return_camera_cb = callback
 	camera.reparent(snake_head)
 	camera.make_current()
-
